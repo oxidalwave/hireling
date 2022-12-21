@@ -7,7 +7,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "reset-db": "rm ./prisma/dev.db && npx prisma db push && npx prisma db seed"
+    "reset-db": "rm -f ./prisma/dev.db && npx prisma db push && npx prisma db seed"
   },
   "dependencies": {
     "@emotion/react": "^11.10.5",

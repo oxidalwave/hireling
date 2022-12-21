@@ -293,11 +293,6 @@ async function main() {
           {
             isBoost: true,
             kind: "ANCESTRY",
-            boosts: {
-              create: [
-                (apiBoost.includes("str") && { abilityScores: { connect: { where: abbreviatedName: 'str' } } })
-              ]
-            }
             strength: apiBoost.includes("str"),
             dexterity: apiBoost.includes("dex"),
             constitution: apiBoost.includes("con"),
