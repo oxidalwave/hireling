@@ -57,12 +57,12 @@ model VerificationToken {
 }
 
 model AbilityScore {
-  id               String                        @id @default(cuid())
-  name             String                        @unique
-  abbreviatedName  String                        @unique
-  description      String
-  Skill            Skill[]
-  playerCharacters PlayerCharacterAbilityScore[]
+  id              String              @id @default(cuid())
+  name            String              @unique
+  abbreviatedName String              @unique
+  description     String
+  Skill           Skill[]
+  boosts          AbilityScoreBoost[]
 }
 
 model Skill {
@@ -92,18 +92,18 @@ model Source {
 }
 
 model PlayerCharacter {
-  id                  String                        @id @default(cuid())
-  name                String
-  user                User                          @relation(fields: [userId], references: [id])
-  userId              String
-  ancestry            Ancestry                      @relation(fields: [ancestryId], references: [id])
-  background          Background                    @relation(fields: [backgroundId], references: [id])
-  playerClass         PlayerClass                   @relation(fields: [playerClassId], references: [id])
-  ancestryId          String
-  backgroundId        String
-  playerClassId       String
-  abilityScores       PlayerCharacterAbilityScore[]
-  feats               PlayerCharacterFeat[]
+  id                 String                             @id @default(cuid())
+  name               String
+  user               User                               @relation(fields: [userId], references: [id])
+  userId             String
+  ancestry           Ancestry                           @relation(fields: [ancestryId], references: [id])
+  background         Background                         @relation(fields: [backgroundId], references: [id])
+  playerClass        PlayerClass                        @relation(fields: [playerClassId], references: [id])
+  ancestryId         String
+  backgroundId       String
+  playerClassId      String
+  abilityScoreBoosts PlayerCharacterAbilityScoreBoost[]
+  feats              PlayerCharacterFeat[]
 }
 
 model PlayerCharacterFeat {
@@ -113,16 +113,6 @@ model PlayerCharacterFeat {
   feat              Feat            @relation(fields: [featId], references: [id])
 
   @@unique([playerCharacterId, featId])
-}
-
-model PlayerCharacterAbilityScore {
-  playerCharacterId String
-  playerCharacter   PlayerCharacter @relation(fields: [playerCharacterId], references: [id])
-  abilityScoreId    String
-  abilityScore      AbilityScore    @relation(fields: [abilityScoreId], references: [id])
-  score             Int
-
-  @@unique([playerCharacterId, abilityScoreId])
 }
 
 model Ancestry {
@@ -142,21 +132,36 @@ model Ancestry {
 }
 
 model Boost {
-  id            String       @id @default(cuid())
+  id            String              @id @default(cuid())
   kind          String
-  ancestry      Ancestry?    @relation(fields: [ancestryId], references: [id])
+  ancestry      Ancestry?           @relation(fields: [ancestryId], references: [id])
   ancestryId    String?
-  background    Background?  @relation(fields: [backgroundId], references: [id])
+  background    Background?         @relation(fields: [backgroundId], references: [id])
   backgroundId  String?
-  playerClass   PlayerClass? @relation(fields: [playerClassId], references: [id])
-  playerClassId String?      @unique
-  isBoost       Boolean
-  strength      Boolean
-  dexterity     Boolean
-  constitution  Boolean
-  intelligence  Boolean
-  wisdom        Boolean
-  charisma      Boolean
+  playerClass   PlayerClass?        @relation(fields: [playerClassId], references: [id])
+  playerClassId String?             @unique
+  isBoost       Boolean             @default(true)
+  abilityScores AbilityScoreBoost[]
+}
+
+model AbilityScoreBoost {
+  id                               String                             @id @default(cuid())
+  abilityScoreId                   String
+  abilityScore                     AbilityScore                       @relation(fields: [abilityScoreId], references: [id])
+  boostId                          String
+  boost                            Boost                              @relation(fields: [boostId], references: [id])
+  playerCharacterAbilityScoreBoost PlayerCharacterAbilityScoreBoost[]
+
+  @@unique([abilityScoreId, boostId])
+}
+
+model PlayerCharacterAbilityScoreBoost {
+  abilityScoreBoostId String
+  abilityScoreBoost   AbilityScoreBoost @relation(fields: [abilityScoreBoostId], references: [id])
+  playerCharacterId   String
+  playerCharacter     PlayerCharacter   @relation(fields: [playerCharacterId], references: [id])
+
+  @@unique([abilityScoreBoostId, playerCharacterId])
 }
 
 model Background {
@@ -183,16 +188,16 @@ model PlayerClass {
 }
 
 model Feat {
-  id                  String                @id @default(cuid())
-  kind                String
-  name                String
-  description         String
-  level               Int
-  playerClasses       PlayerClassFeat[]
-  ancestries          AncestryFeat[]
-  source              Source                @relation(fields: [sourceId], references: [id])
-  sourceId            String
-  playerCharacters    PlayerCharacterFeat[]
+  id               String                @id @default(cuid())
+  kind             String
+  name             String
+  description      String
+  level            Int
+  playerClasses    PlayerClassFeat[]
+  ancestries       AncestryFeat[]
+  source           Source                @relation(fields: [sourceId], references: [id])
+  sourceId         String
+  playerCharacters PlayerCharacterFeat[]
 
   @@unique([kind, name, sourceId])
 }
