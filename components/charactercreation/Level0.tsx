@@ -78,7 +78,6 @@ const Level0 = ({ ancestries, backgrounds, playerClasses }) => {
   };
 
   const createCharacter = async () => {
-    console.log(payload);
     try {
       await axios
         .post("http://localhost:3000/api/playercharacters", payload)
