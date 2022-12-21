@@ -23,13 +23,14 @@ export default function AncestryOpts({ ancestry, setAncestry }) {
     d?.boosts
       ?.filter(({ isBoost }) => isBoost === isBoostCheck)
       ?.map((as) => {
+        console.log(as.abilityScores)
         return [
-          { label: "Strength", value: "str", disabled: !as.strength },
-          { label: "Dexterity", value: "dex", disabled: !as.dexterity },
-          { label: "Constitution", value: "con", disabled: !as.constitution },
-          { label: "Intelligence", value: "int", disabled: !as.intelligence },
-          { label: "Wisdom", value: "wis", disabled: !as.wisdom },
-          { label: "Charisma", value: "cha", disabled: !as.charisma },
+          { label: "Strength", value: as.abilityScores.filter((a) => a.abilityScore.abbreviatedName === 'str')[0]?.id ?? '', disabled: as.abilityScores.filter((a) => a.abilityScore.abbreviatedName === 'str').length === 0 },
+          { label: "Dexterity", value: as.abilityScores.filter((a) => a.abilityScore.abbreviatedName === 'dex')[0]?.id ?? '', disabled: as.abilityScores.filter((a) => a.abilityScore.abbreviatedName === 'dex').length === 0 },
+          { label: "Constitution", value: as.abilityScores.filter((a) => a.abilityScore.abbreviatedName === 'con')[0]?.id ?? '', disabled: as.abilityScores.filter((a) => a.abilityScore.abbreviatedName === 'con').length === 0 },
+          { label: "Intelligence", value: as.abilityScores.filter((a) => a.abilityScore.abbreviatedName === 'int')[0]?.id ?? '', disabled: as.abilityScores.filter((a) => a.abilityScore.abbreviatedName === 'int').length === 0 },
+          { label: "Wisdom", value: as.abilityScores.filter((a) => a.abilityScore.abbreviatedName === 'wis')[0]?.id ?? '', disabled: as.abilityScores.filter((a) => a.abilityScore.abbreviatedName === 'wis').length === 0 },
+          { label: "Charisma", value: as.abilityScores.filter((a) => a.abilityScore.abbreviatedName === 'cha')[0]?.id ?? '', disabled: as.abilityScores.filter((a) => a.abilityScore.abbreviatedName === 'cha').length === 0 },
         ];
       }) ?? [];
 
