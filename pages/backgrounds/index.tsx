@@ -14,18 +14,16 @@ export async function getStaticProps(ctx) {
     .get(`http://localhost:3000/api/sources?resourcetype=backgrounds`)
     .then((r) => r.data);
 
-  console.log(backgrounds)
-
   return {
     props: {
-      backgrounds: backgrounds.map(b => ({
+      backgrounds: backgrounds.map((b) => ({
         id: b.id,
         name: b.name,
-        source: b.source.name
+        source: b.source.name,
       })),
-      sources: sources.map((s) => s.name)
+      sources: sources.map((s) => s.name),
     },
-    revalidate: 30
+    revalidate: 30,
   };
 }
 

@@ -24,7 +24,9 @@ const BackgroundPage = ({ background }) => {
 
   const [readOnly, setReadOnly] = useState<boolean>(true);
 
-  const [editedDescription, setEditedDescription] = useState<string>(background.description);
+  const [editedDescription, setEditedDescription] = useState<string>(
+    background.description
+  );
 
   const toggleReadOnly = async () => {
     if (!readOnly) {
