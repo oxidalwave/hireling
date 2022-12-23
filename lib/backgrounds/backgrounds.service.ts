@@ -28,10 +28,30 @@ export async function getBackgrounds(where = {}) {
   });
 }
 
-export async function getBackground(id): Promise<Background | null> {
+export async function getBackground(id) {
   return await prisma.background.findUnique({
     where: { id },
-    include: { source: true, boosts: true },
+    select: {
+      id: true,
+      name: true,
+      description: true,
+      source: true,
+      boosts: {
+        select: {
+          id: true,
+          kind: true,
+          isBoost: true,
+          abilityScores: {
+            select: {
+              id: true,
+              abilityScore: {
+                select: { id: true, name: true, abbreviatedName: true },
+              },
+            },
+          },
+        },
+      },
+    },
   });
 }
 

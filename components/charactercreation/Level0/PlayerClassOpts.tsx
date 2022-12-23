@@ -1,29 +1,55 @@
-import { ScrollArea, SegmentedControl, Stack } from "@mantine/core";
+import {
+  Alert,
+  Loader,
+  ScrollArea,
+  SegmentedControl,
+  Stack,
+} from "@mantine/core";
+import { showNotification } from "@mantine/notifications";
 import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
 import RichTextEditor from "components/RichTextEditor";
+import { getSegmentedControlDataFromBoosts } from "lib/boosts/boostUtils";
 import FeatSelection from "./FeatSelection";
 
 export interface PlayerClassOptsProps {
-  playerClass: { id: string, boost?: string , featId?: string };
+  playerClass: { id: string; boost?: string; featId?: string };
   setPlayerClass;
 }
 
-export default function PlayerClassOpts({ playerClass, setPlayerClass }: PlayerClassOptsProps) {
-  const { data: playerClassData } = useQuery({
+export default function PlayerClassOpts({
+  playerClass,
+  setPlayerClass,
+}: PlayerClassOptsProps) {
+  const {
+    data: playerClassData,
+    isLoading: playerClassIsLoading,
+    error: playerClassError,
+  } = useQuery({
     queryKey: ["playerclasses", playerClass?.id || "0"],
     queryFn: () =>
       axios
         .get(`http://localhost:3000/api/playerclasses/${playerClass.id}`)
         .then((r) => r.data),
     onSuccess: (d) => {
+      console.log(d);
       const pc = { ...playerClass };
       pc.boost = d.boost;
       setPlayerClass(pc);
     },
+    onError: (e: Error) => {
+      showNotification({
+        title: "Could not load Player Class",
+        message: e.toString(),
+      });
+    },
   });
 
-  const { data: featData } = useQuery({
+  const {
+    data: featData,
+    isLoading: featsIsLoading,
+    error: featsError,
+  } = useQuery({
     queryKey: ["feats", playerClassData?.name],
     queryFn: () =>
       axios
@@ -31,84 +57,76 @@ export default function PlayerClassOpts({ playerClass, setPlayerClass }: PlayerC
           `http://localhost:3000/api/feats?className=${playerClassData?.name}`
         )
         .then((r) => r.data),
+    onError: (e: Error) => {
+      showNotification({
+        title: "Could not load Feat",
+        message: e.toString(),
+      });
+    },
   });
 
-  const updateBoost = (a) => {
-    let pc = { ...playerClass };
-    pc.boost = a;
-    setPlayerClass(pc);
-  };
+  if (playerClassIsLoading || featsIsLoading) {
+    return <Loader />;
+  }
 
-  const boostOptions = [
-    {
-      label: "Strength",
-      value: "str",
-      disabled: !playerClassData?.boost?.strength,
-    },
-    {
-      label: "Dexterity",
-      value: "dex",
-      disabled: !playerClassData?.boost?.dexterity,
-    },
-    {
-      label: "Constitution",
-      value: "con",
-      disabled: !playerClassData?.boost?.constitution,
-    },
-    {
-      label: "Intelligence",
-      value: "int",
-      disabled: !playerClassData?.boost?.intelligence,
-    },
-    {
-      label: "Wisdom",
-      value: "wis",
-      disabled: !playerClassData?.boost?.wisdom,
-    },
-    {
-      label: "Charisma",
-      value: "cha",
-      disabled: !playerClassData?.boost?.charisma,
-    },
-  ];
+  if (playerClassError) {
+    return <Alert color="red">Could not load Player Class</Alert>;
+  }
+  if (featsError) {
+    return <Alert color="red">Could not load Feats</Alert>;
+  }
 
-  const feats =
-    featData?.map((f) => ({
+  if (playerClassData && featData) {
+    const updateBoost = (a) => {
+      let pc = { ...playerClass };
+      pc.boost = a;
+      setPlayerClass(pc);
+    };
+
+    const feats = featData?.map((f) => ({
       label: f.name,
       value: f.id,
     }));
 
-  return (
-    <Stack>
-      {playerClassData?.description && (
-        <>
-          <ScrollArea.Autosize maxHeight={240}>
-            <RichTextEditor
-              value={playerClassData.description}
-              readOnly
-              id="playerClassDescription"
+    console.log(playerClassData);
+    const { description, boost } = playerClassData;
+    const boostsData = getSegmentedControlDataFromBoosts(true, [boost]);
+
+    return (
+      <Stack>
+        {description && (
+          <>
+            <ScrollArea.Autosize maxHeight={240}>
+              <RichTextEditor
+                value={description}
+                readOnly
+                id="playerClassDescription"
+              />
+            </ScrollArea.Autosize>
+            <SegmentedControl
+              color={playerClass.boost ? "blue" : "dark"}
+              key={`player-class-boost`}
+              value={playerClass.boost}
+              onChange={updateBoost}
+              data={boostsData[0]}
             />
-          </ScrollArea.Autosize>
-          <SegmentedControl
-            color={playerClass.boost ? "blue" : "dark"}
-            key={`player-class-boost`}
-            value={playerClass.boost}
-            onChange={updateBoost}
-            data={boostOptions}
+          </>
+        )}
+        {feats?.length > 0 && (
+          <FeatSelection
+            feat={playerClass.featId}
+            setFeat={(f) => {
+              const pc = { ...playerClass };
+              pc.featId = f;
+              setPlayerClass(pc);
+            }}
+            feats={feats}
           />
-        </>
-      )}
-      {feats?.length > 0 && (
-        <FeatSelection
-          feat={playerClass.featId}
-          setFeat={(f) => {
-            const pc = { ...playerClass };
-            pc.featId = f;
-            setPlayerClass(pc);
-          }}
-          feats={feats}
-        />
-      )}
-    </Stack>
-  );
+        )}
+      </Stack>
+    );
+  }
+
+  showNotification({ message: "Error generating JSX" });
+  return <Alert color="red">Error generating JSX</Alert>;
 }

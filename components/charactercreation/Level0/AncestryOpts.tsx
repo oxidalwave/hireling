@@ -1,13 +1,16 @@
 import {
   Alert,
+  Loader,
   ScrollArea,
   SegmentedControl,
   Stack,
   Text,
 } from "@mantine/core";
+import { showNotification } from "@mantine/notifications";
 import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
 import RichTextEditor from "components/RichTextEditor";
+import { getSegmentedControlDataFromBoosts } from "lib/boosts/boostUtils";
 
 interface AncestryOptsProps {
   ancestry: {
@@ -18,23 +21,11 @@ interface AncestryOptsProps {
   setAncestry;
 }
 
-export default function AncestryOpts({ ancestry, setAncestry }) {
-  const opts = (isBoostCheck, d) =>
-    d?.boosts
-      ?.filter(({ isBoost }) => isBoost === isBoostCheck)
-      ?.map((as) => {
-        console.log(as.abilityScores)
-        return [
-          { label: "Strength", value: as.abilityScores.filter((a) => a.abilityScore.abbreviatedName === 'str')[0]?.id ?? '', disabled: as.abilityScores.filter((a) => a.abilityScore.abbreviatedName === 'str').length === 0 },
-          { label: "Dexterity", value: as.abilityScores.filter((a) => a.abilityScore.abbreviatedName === 'dex')[0]?.id ?? '', disabled: as.abilityScores.filter((a) => a.abilityScore.abbreviatedName === 'dex').length === 0 },
-          { label: "Constitution", value: as.abilityScores.filter((a) => a.abilityScore.abbreviatedName === 'con')[0]?.id ?? '', disabled: as.abilityScores.filter((a) => a.abilityScore.abbreviatedName === 'con').length === 0 },
-          { label: "Intelligence", value: as.abilityScores.filter((a) => a.abilityScore.abbreviatedName === 'int')[0]?.id ?? '', disabled: as.abilityScores.filter((a) => a.abilityScore.abbreviatedName === 'int').length === 0 },
-          { label: "Wisdom", value: as.abilityScores.filter((a) => a.abilityScore.abbreviatedName === 'wis')[0]?.id ?? '', disabled: as.abilityScores.filter((a) => a.abilityScore.abbreviatedName === 'wis').length === 0 },
-          { label: "Charisma", value: as.abilityScores.filter((a) => a.abilityScore.abbreviatedName === 'cha')[0]?.id ?? '', disabled: as.abilityScores.filter((a) => a.abilityScore.abbreviatedName === 'cha').length === 0 },
-        ];
-      }) ?? [];
-
-  const { data } = useQuery({
+export default function AncestryOpts({
+  ancestry,
+  setAncestry,
+}: AncestryOptsProps) {
+  const { data, isLoading, error } = useQuery({
     queryKey: ["ancestries", ancestry?.id || "0"],
     queryFn: () =>
       axios
@@ -42,73 +33,100 @@ export default function AncestryOpts({ ancestry, setAncestry }) {
         .then((r) => r.data),
     onSuccess: (d) => {
       const a = { ...ancestry };
-      a.boosts = Array.from(Array(opts(true, d).length).keys()).map((i) => "");
-      a.flaws = Array.from(Array(opts(false, d).length).keys()).map((i) => "");
+      a.boosts = Array.from(
+        Array(getSegmentedControlDataFromBoosts(true, d.boosts).length).keys()
+      ).map((i) => "");
+      a.flaws = Array.from(
+        Array(getSegmentedControlDataFromBoosts(false, d.boosts).length).keys()
+      ).map((i) => "");
       setAncestry(a);
+    },
+    onError: (e: Error) => {
+      showNotification({
+        title: "Could not load Ancestry",
+        message: e.toString(),
+      });
     },
   });
 
-  const updateBoost = (i, ability) => {
-    let a = { ...ancestry };
-    let bs = a.boosts;
-    bs[i] = ability;
-    a.boosts = bs;
-    setAncestry(a);
-  };
+  if (isLoading) {
+    return <Loader />;
+  }
 
-  const updateFlaw = (i, ability) => {
-    let a = { ...ancestry };
-    let fs = a.flaws;
-    fs[i] = ability;
-    a.flaws = fs;
-    setAncestry(a);
-  };
+  if (error) {
+    return (
+      <Alert color="red">
+        Could not load the Ancestry. Please check your notifications.
+      </Alert>
+    );
+  }
 
-  return (
-    <Stack>
-      {data?.description && (
-        <ScrollArea.Autosize maxHeight={240}>
-          <RichTextEditor
-            value={data.description}
-            readOnly
-            id="ancestryDescription"
-          />
-        </ScrollArea.Autosize>
-      )}
-      {opts(true, data).length > 0 && (
-        <>
-          <Text>Boosts</Text>
-          {opts(true, data).map((b, i) => (
-            <SegmentedControl
-              color={ancestry.boosts[i] ? "blue" : "dark"}
-              key={`ancestry-boost-${i}`}
-              value={ancestry.boosts[i]}
-              onChange={(a) => updateBoost(i, a)}
-              data={b}
+  if (data) {
+    const updateBoost = (i, ability) => {
+      let a = { ...ancestry };
+      let bs = a.boosts;
+      bs[i] = ability;
+      a.boosts = bs;
+      setAncestry(a);
+    };
+
+    const updateFlaw = (i, ability) => {
+      let a = { ...ancestry };
+      let fs = a.flaws;
+      fs[i] = ability;
+      a.flaws = fs;
+      setAncestry(a);
+    };
+    const { description, boosts } = data;
+    const boostsData = getSegmentedControlDataFromBoosts(true, boosts);
+    const flawsData = getSegmentedControlDataFromBoosts(false, boosts);
+
+    return (
+      <Stack>
+        {description && (
+          <ScrollArea.Autosize maxHeight={240}>
+            <RichTextEditor
+              value={description}
+              readOnly
+              id="ancestryDescription"
             />
-          ))}
-          {ancestry.boosts.includes("") && (
-            <Alert color="red">Please confirm all Boosts are selected.</Alert>
-          )}
-        </>
-      )}
-      {opts(false, data).length > 0 && (
-        <>
-          <Text>Flaws</Text>
-          {opts(false, data).map((f, i) => (
-            <SegmentedControl
-              color={ancestry.flaws[i] ? "pink" : "dark"}
-              key={`ancestry-flaw-${i}`}
-              value={ancestry.flaws[i]}
-              onChange={(a) => updateFlaw(i, a)}
-              data={f}
-            />
-          ))}
-          {ancestry.flaws.includes("") && (
-            <Alert color="red">Please confirm all Flaws are selected.</Alert>
-          )}
-        </>
-      )}
-    </Stack>
-  );
+          </ScrollArea.Autosize>
+        )}
+        {boostsData.length > 0 && (
+          <>
+            <Text>Boosts</Text>
+            {boostsData.map((b, i) => (
+              <SegmentedControl
+                color={ancestry.boosts[i] ? "blue" : "dark"}
+                key={`ancestry-boost-${i}`}
+                value={ancestry.boosts[i]}
+                onChange={(a) => updateBoost(i, a)}
+                data={b}
+              />
+            ))}
+            {ancestry.boosts.includes("") && (
+              <Alert color="red">Please confirm all Boosts are selected.</Alert>
+            )}
+          </>
+        )}
+        {flawsData.length > 0 && (
+          <>
+            <Text>Flaws</Text>
+            {flawsData.map((f, i) => (
+              <SegmentedControl
+                color={ancestry.flaws[i] ? "pink" : "dark"}
+                key={`ancestry-flaw-${i}`}
+                value={ancestry.flaws[i]}
+                onChange={(a) => updateFlaw(i, a)}
+                data={f}
+              />
+            ))}
+            {ancestry.flaws.includes("") && (
+              <Alert color="red">Please confirm all Flaws are selected.</Alert>
+            )}
+          </>
+        )}
+      </Stack>
+    );
+  }
 }
