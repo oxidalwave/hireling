@@ -47,7 +47,7 @@ async function main() {
     });
   }
 
-  for (let i = 0; i < 4; i++) {
+  for (let i = 0; i < 16; i++) {
     await prisma.boost.create({
       data: {
         kind: "FREE",

@@ -4,6 +4,7 @@ import {
   getBackground,
   updateBackground,
 } from "lib/backgrounds/backgrounds.service";
+import { getFreeBoosts } from "lib/boosts/boosts.service";
 import { NextApiRequest, NextApiResponse } from "next";
 
 export default async function handler(
@@ -43,10 +44,7 @@ async function handleDelete(
   }
 }
 
-async function handleGet(
-  req: NextApiRequest,
-  res: NextApiResponse<Background | { error }>
-) {
+async function handleGet(req: NextApiRequest, res: NextApiResponse) {
   const id: string | string[] | undefined = req.query.id;
   if (id !== "string") {
     const background = await getBackground(id);

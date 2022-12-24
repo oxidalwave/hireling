@@ -4,6 +4,7 @@ import {
   Button,
   SegmentedControl,
   Alert,
+  Loader,
 } from "@mantine/core";
 import { useState } from "react";
 import Ancestry from "components/charactercreation/Level0/Ancestry";
@@ -14,11 +15,14 @@ import AbilityScores from "./Level0/AbilityScores";
 import axios from "axios";
 import { showNotification } from "@mantine/notifications";
 import {
+  Boost,
   NewPlayerCharacterAncestry,
   NewPlayerCharacterBackground,
   NewPlayerCharacterFreeBoost,
   NewPlayerCharacterPlayerClass,
 } from "types/PlayerCharacter";
+import { useQuery } from "@tanstack/react-query";
+import FreeBoosts from "./Level0/FreeBoosts";
 
 const Level0 = ({ ancestries, backgrounds, playerClasses }) => {
   const { data: session } = useSession();
@@ -31,51 +35,33 @@ const Level0 = ({ ancestries, backgrounds, playerClasses }) => {
     id: "",
   });
   const [playerClass, setPlayerClass] = useState<NewPlayerCharacterPlayerClass>(
-    { id: "", feat: "", boost: "" }
+    { id: "", feat: "", boost: { id: "" } }
   );
 
   const [freeBoosts, setFreeBoosts] = useState<NewPlayerCharacterFreeBoost[]>([
-    "",
-    "",
-    "",
-    "",
+    { id: "" },
+    { id: "" },
+    { id: "" },
+    { id: "" },
   ]);
 
-  const updateBoost = (i, a) => {
-    let b = [...freeBoosts];
-    b[i] = a;
-    setFreeBoosts(b);
-  };
-
-  const boosts = [
+  const boosts: Boost[] = [
     ...(ancestry.boosts ?? []),
     ...(background.boosts ?? []),
-    playerClass.boost,
-    ...freeBoosts,
+    //playerClass.boost,
+    ...(freeBoosts ?? []),
   ];
   const flaws = [...(ancestry.flaws ?? []), ...(background.flaws ?? [])];
-
-  const getScoreFor = (abilityScore: string) => {
-    const boostCount = boosts.filter((b) => b === abilityScore).length;
-    const flawCount = flaws.filter((f) => f === abilityScore).length;
-    return 10 + boostCount * 2 - flawCount * 2;
-  };
 
   const payload = {
     name,
     ancestry: { id: ancestry.id },
     background: { id: background.id },
     playerClass: { id: playerClass.id },
-    abilityScores: {
-      str: getScoreFor("str"),
-      dex: getScoreFor("dex"),
-      con: getScoreFor("con"),
-      int: getScoreFor("int"),
-      wis: getScoreFor("wis"),
-      cha: getScoreFor("cha"),
-    },
-    feats: [{ id: playerClass.feat }],
+    boosts: boosts.map((id) => ({ id })),
   };
+
+  const logCharacter = () => console.log(payload);
 
   const createCharacter = async () => {
     try {
@@ -87,13 +73,14 @@ const Level0 = ({ ancestries, backgrounds, playerClasses }) => {
     }
   };
 
+  const shouldValidate = false;
   const isValid =
     name &&
     ancestry &&
     background &&
     playerClass &&
-    !boosts.includes("") &&
-    !flaws.includes("");
+    !boosts.find(({ id }) => id === "") &&
+    !flaws.find(({ id }) => id === "");
 
   return (
     <Stack>
@@ -126,27 +113,12 @@ const Level0 = ({ ancestries, backgrounds, playerClasses }) => {
           value: pc.id,
         }))}
       />
-      {freeBoosts.map((b, i) => (
-        <SegmentedControl
-          color={b ? "blue" : "dark"}
-          key={`free-boost-${i}`}
-          value={b}
-          onChange={(a) => updateBoost(i, a)}
-          data={[
-            { label: "Strength", value: "str" },
-            { label: "Dexterity", value: "dex" },
-            { label: "Constitution", value: "con" },
-            { label: "Intelligence", value: "int" },
-            { label: "Wisdom", value: "wis" },
-            { label: "Charisma", value: "cha" },
-          ]}
-        />
-      ))}
+      <FreeBoosts boosts={freeBoosts} setBoosts={setFreeBoosts} />
       <AbilityScores boosts={boosts} flaws={flaws} />
-      {isValid ? (
-        <Button onClick={createCharacter}>SUBMIT</Button>
-      ) : (
+      {shouldValidate && !isValid ? (
         <Alert color="red">There is an unselected input.</Alert>
+      ) : (
+        <Button onClick={logCharacter}>SUBMIT</Button>
       )}
     </Stack>
   );

@@ -1,4 +1,4 @@
-export type Boost = string
+export type Boost = { id: string }
 
 export type NewPlayerCharacterFreeBoost = Boost;
 

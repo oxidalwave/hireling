@@ -17,6 +17,8 @@ export function getSegmentedControlDataFromBoosts(
     include: { abilityScores: { include: { abilityScore: true } } };
   }>[]
 ) {
+  console.log(boosts)
+
   return (
     boosts
       ?.filter(({ isBoost }) => isBoost === isBoostCheck)
@@ -30,6 +32,8 @@ export function getSegmentedControlDataFromBoosts(
           { label: "Charisma", abbreviation: "cha" },
         ].map(({ label, abbreviation }) => {
           const vs = values(abilityScores, abbreviation);
+
+          console.log(vs)
 
           return {
             label,
