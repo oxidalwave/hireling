@@ -21,7 +21,6 @@ import {
   NewPlayerCharacterFreeBoost,
   NewPlayerCharacterPlayerClass,
 } from "types/PlayerCharacter";
-import { useQuery } from "@tanstack/react-query";
 import FreeBoosts from "./Level0/FreeBoosts";
 
 const Level0 = ({ ancestries, backgrounds, playerClasses }) => {
@@ -48,9 +47,9 @@ const Level0 = ({ ancestries, backgrounds, playerClasses }) => {
   const boosts: Boost[] = [
     ...(ancestry.boosts ?? []),
     ...(background.boosts ?? []),
-    //playerClass.boost,
+    playerClass.boost ?? { id: "" },
     ...(freeBoosts ?? []),
-  ];
+  ].filter(({ id }) => id !== "");
   const flaws = [...(ancestry.flaws ?? []), ...(background.flaws ?? [])];
 
   const payload = {
@@ -114,7 +113,7 @@ const Level0 = ({ ancestries, backgrounds, playerClasses }) => {
         }))}
       />
       <FreeBoosts boosts={freeBoosts} setBoosts={setFreeBoosts} />
-      <AbilityScores boosts={boosts} flaws={flaws} />
+      <AbilityScores boosts={[...boosts, ...flaws]} />
       {shouldValidate && !isValid ? (
         <Alert color="red">There is an unselected input.</Alert>
       ) : (

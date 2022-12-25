@@ -49,15 +49,22 @@ export default function FreeBoosts({ boosts, setBoosts, count = 4 }) {
     return <Alert color="red">{error.toString()}</Alert>;
   }
 
-  const freeBoostData = data.map((b, i) =>
+  const d = data.map((b, i) =>
     b.abilityScores.map(({ abilityScore, id }, asi) => ({
       label: abilityScore.name,
       value: id,
     }))
   );
 
-  console.log(boosts);
-  console.log(freeBoostData);
+  const freeBoostData = data.map((b, i) => [
+    { label: 'Strength', value: b.abilityScores.find((as) => as.abilityScore.abbreviatedName === 'str').id },
+    { label: 'Dexterity', value: b.abilityScores.find((as) => as.abilityScore.abbreviatedName === 'dex').id },
+    { label: 'Constitution', value: b.abilityScores.find((as) => as.abilityScore.abbreviatedName === 'con').id },
+    { label: 'Intelligence', value: b.abilityScores.find((as) => as.abilityScore.abbreviatedName === 'int').id },
+    { label: 'Wisdom', value: b.abilityScores.find((as) => as.abilityScore.abbreviatedName === 'wis').id },
+    { label: 'Charisma', value: b.abilityScores.find((as) => as.abilityScore.abbreviatedName === 'cha').id },
+  ]
+);
 
   return (
     <>

@@ -20,47 +20,37 @@ type AbilityScoresArray = {
 
 type AbilityScoresProps = {
   boosts;
-  flaws;
 };
 
-const AbilityScores = ({ boosts, flaws }: AbilityScoresProps) => {
+const AbilityScores = ({ boosts }: AbilityScoresProps) => {
   console.log(boosts);
 
   const results = useQueries({
-    queries: [
-      ...boosts
-        .filter((id) => id !== "")
-        .map((id) => ({
-          queryFn: () =>
-            axios
-              .get(`http://localhost:3000/api/abilityscoreboosts/${id}`)
-              .then((r) => r.data),
-          queryKey: ["boost", id],
-        })),
-      ...flaws
-        .filter(({ id }) => id !== "")
-        .map(({ id }) => ({
-          queryFn: () =>
-            axios
-              .get(`http://localhost:3000/api/abilityscoreboosts/${id}`)
-              .then((r) => r.data),
-          queryKey: ["boost", id],
-        })),
-    ],
+    queries: boosts
+      .filter((id) => id !== "")
+      .map((id) => ({
+        queryFn: () =>
+          axios
+            .get(`http://localhost:3000/api/abilityscoreboosts/${id}`)
+            .then((r) => r.data),
+        queryKey: ["boost", id],
+      })),
   });
 
   if (results.find((r) => r.isLoading)) {
-    return <Card>
-    <Text>Ability Scores</Text>
-    <SimpleGrid cols={6}>
-      <NumberInput readOnly label="Strength" value={0} />
-      <NumberInput readOnly label="Dexterity" value={0} />
-      <NumberInput readOnly label="Constitution" value={0} />
-      <NumberInput readOnly label="Intelligence" value={0} />
-      <NumberInput readOnly label="Wisdom" value={0} />
-      <NumberInput readOnly label="Charisma" value={0} />
-    </SimpleGrid>
-  </Card>;
+    return (
+      <Card>
+        <Text>Ability Scores</Text>
+        <SimpleGrid cols={6}>
+          <NumberInput readOnly label="Strength" value={0} />
+          <NumberInput readOnly label="Dexterity" value={0} />
+          <NumberInput readOnly label="Constitution" value={0} />
+          <NumberInput readOnly label="Intelligence" value={0} />
+          <NumberInput readOnly label="Wisdom" value={0} />
+          <NumberInput readOnly label="Charisma" value={0} />
+        </SimpleGrid>
+      </Card>
+    );
   }
 
   if (results.find((r) => r.error)) {
@@ -75,7 +65,9 @@ const AbilityScores = ({ boosts, flaws }: AbilityScoresProps) => {
     results.reduce(
       (p, c) =>
         c?.data?.abilityScore?.abbreviatedName === abilityScoreAbbreviation
-          ? p + 2
+          ? c?.data?.boost?.isBoost
+            ? p + 2
+            : p - 2
           : p,
       10
     );

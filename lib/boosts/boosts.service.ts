@@ -15,6 +15,7 @@ export async function getFreeBoosts(count: number) {
     orderBy: { id: "asc" },
     select: {
       id: true,
+      isBoost: true,
       abilityScores: {
         select: {
           id: true,
