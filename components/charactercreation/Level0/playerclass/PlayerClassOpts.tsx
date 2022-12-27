@@ -2,7 +2,6 @@ import {
   Alert,
   Loader,
   ScrollArea,
-  SegmentedControl,
   Stack,
 } from "@mantine/core";
 import { showNotification } from "@mantine/notifications";
@@ -10,8 +9,8 @@ import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
 import RichTextEditor from "components/RichTextEditor";
 import { getSegmentedControlDataFromBoosts } from "lib/boosts/boostUtils";
-import Boost from "./Boost";
-import FeatSelection from "./FeatSelection";
+import Boost from "../Boost";
+import FeatSelection from "../feat/FeatSelection";
 
 export interface PlayerClassOptsProps {
   playerClass: { id: string; boost: string; featId?: string };

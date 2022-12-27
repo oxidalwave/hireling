@@ -12,7 +12,6 @@ const values = (abilityScores, abbreviation) =>
   );
 
 export function getSegmentedControlDataFromBoosts(
-  isBoostCheck: boolean,
   boosts: Prisma.BoostGetPayload<{
     include: { abilityScores: { include: { abilityScore: true } } };
   }>[]
@@ -21,7 +20,6 @@ export function getSegmentedControlDataFromBoosts(
 
   return (
     boosts
-      ?.filter(({ isBoost }) => isBoost === isBoostCheck)
       ?.map(({ abilityScores }) => {
         return [
           { label: "Strength", abbreviation: "str" },

@@ -2,7 +2,6 @@ import {
   Alert,
   Loader,
   ScrollArea,
-  SegmentedControl,
   Stack,
   Text,
 } from "@mantine/core";
@@ -11,12 +10,12 @@ import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
 import RichTextEditor from "components/RichTextEditor";
 import { getSegmentedControlDataFromBoosts } from "lib/boosts/boostUtils";
+import Boost from "../Boost";
 
 interface AncestryOptsProps {
   ancestry: {
     id: string;
     boosts: string[];
-    flaws: string[];
   };
   setAncestry;
 }
@@ -36,14 +35,8 @@ export default function AncestryOpts({
     onSuccess: (d) => {
       console.log(d);
       const a = { ...ancestry };
-      a.boosts = Array.from(
-        // Set boosts to a list of empty strings the same length as the payload's boosts
-        Array(getSegmentedControlDataFromBoosts(true, d.boosts).length).keys()
-      ).map((i) => "");
-      a.flaws = Array.from(
-        // Set boosts to a list of empty strings the same length as the payload's boosts
-        Array(getSegmentedControlDataFromBoosts(false, d.boosts).length).keys()
-      ).map((i) => "");
+      const boosts = d.boosts;
+      a.boosts = boosts.map((b) => "");
       setAncestry(a);
     },
     onError: (e: Error) => {
@@ -52,7 +45,7 @@ export default function AncestryOpts({
         message: e.toString(),
       });
     },
-    refetchOnWindowFocus: false
+    refetchOnWindowFocus: false,
   });
 
   if (isLoading) {
@@ -80,17 +73,10 @@ export default function AncestryOpts({
       setAncestry(a);
     };
 
-    const updateFlaw = (i, ability) => {
-      let a = { ...ancestry };
-      let fs = a.flaws;
-      fs[i] = ability;
-      a.flaws = fs;
-      setAncestry(a);
-    };
-    
     const { description, boosts } = data;
-    const boostsData = getSegmentedControlDataFromBoosts(true, boosts);
-    const flawsData = getSegmentedControlDataFromBoosts(false, boosts);
+    const boostsData = getSegmentedControlDataFromBoosts(boosts);
+    console.log(ancestry);
+    console.log(boostsData);
 
     return (
       <Stack>
@@ -107,33 +93,16 @@ export default function AncestryOpts({
           <>
             <Text>Boosts</Text>
             {ancestry.boosts.map((b, i) => (
-              <SegmentedControl
-                color={b ? "blue" : "dark"}
+              <Boost
                 key={`ancestry-boost-${i}`}
                 value={b}
-                onChange={(a) => updateBoost(i, a)}
-                data={boostsData[i]}
+                setValue={(a) => updateBoost(i, a)}
+                choices={boostsData[i]}
+                isFlaw={!boosts[i].isBoost}
               />
             ))}
             {ancestry.boosts.includes("") && (
               <Alert color="red">Please confirm all Boosts are selected.</Alert>
-            )}
-          </>
-        )}
-        {flawsData.length > 0 && (
-          <>
-            <Text>Flaws</Text>
-            {ancestry.flaws.map((f, i) => (
-              <SegmentedControl
-                color={f ? "pink" : "dark"}
-                key={`ancestry-flaw-${i}`}
-                value={f}
-                onChange={(a) => updateFlaw(i, a)}
-                data={flawsData[i]}
-              />
-            ))}
-            {ancestry.flaws.includes("") && (
-              <Alert color="red">Please confirm all Flaws are selected.</Alert>
             )}
           </>
         )}

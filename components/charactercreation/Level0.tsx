@@ -2,15 +2,13 @@ import {
   TextInput,
   Stack,
   Button,
-  SegmentedControl,
   Alert,
-  Loader,
 } from "@mantine/core";
 import { useState } from "react";
-import Ancestry from "components/charactercreation/Level0/Ancestry";
+import Ancestry from "components/charactercreation/Level0/ancestry/Ancestry";
 import { useSession } from "next-auth/react";
-import Background from "./Level0/Background";
-import PlayerClass from "./Level0/PlayerClass";
+import Background from "./Level0/background/Background";
+import PlayerClass from "./Level0/playerclass/PlayerClass";
 import AbilityScores from "./Level0/AbilityScores";
 import axios from "axios";
 import { showNotification } from "@mantine/notifications";
@@ -29,8 +27,7 @@ const Level0 = ({ ancestries, backgrounds, playerClasses }) => {
   const [name, setName] = useState("");
   const [ancestry, setAncestry] = useState<NewPlayerCharacterAncestry>({
     id: "",
-    boosts: [],
-    flaws: []
+    boosts: []
   });
   const [background, setBackground] = useState<NewPlayerCharacterBackground>({
     id: "",
