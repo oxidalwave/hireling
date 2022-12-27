@@ -29,9 +29,13 @@ const Level0 = ({ ancestries, backgrounds, playerClasses }) => {
   const [name, setName] = useState("");
   const [ancestry, setAncestry] = useState<NewPlayerCharacterAncestry>({
     id: "",
+    boosts: [],
+    flaws: []
   });
   const [background, setBackground] = useState<NewPlayerCharacterBackground>({
     id: "",
+    boosts: [],
+    flaws: []
   });
   const [playerClass, setPlayerClass] = useState<NewPlayerCharacterPlayerClass>(
     { id: "", feat: "", boost: { id: "" } }

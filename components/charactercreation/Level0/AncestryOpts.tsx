@@ -24,19 +24,24 @@ interface AncestryOptsProps {
 export default function AncestryOpts({
   ancestry,
   setAncestry,
-}: AncestryOptsProps) {
+}: AncestryOptsProps): JSX.Element {
+  console.log(ancestry);
+
   const { data, isLoading, error } = useQuery({
-    queryKey: ["ancestries", ancestry?.id || "0"],
-    queryFn: () =>
-      axios
+    queryKey: ["ancestries", ancestry.id],
+    queryFn: async () =>
+      await axios
         .get(`http://localhost:3000/api/ancestries/${ancestry.id}`)
         .then((r) => r.data),
     onSuccess: (d) => {
+      console.log(d);
       const a = { ...ancestry };
       a.boosts = Array.from(
+        // Set boosts to a list of empty strings the same length as the payload's boosts
         Array(getSegmentedControlDataFromBoosts(true, d.boosts).length).keys()
       ).map((i) => "");
       a.flaws = Array.from(
+        // Set boosts to a list of empty strings the same length as the payload's boosts
         Array(getSegmentedControlDataFromBoosts(false, d.boosts).length).keys()
       ).map((i) => "");
       setAncestry(a);
@@ -47,13 +52,16 @@ export default function AncestryOpts({
         message: e.toString(),
       });
     },
+    refetchOnWindowFocus: false
   });
 
   if (isLoading) {
+    console.log(`Loading Ancestry ${ancestry.id}`);
     return <Loader />;
   }
 
   if (error) {
+    console.error(error);
     return (
       <Alert color="red">
         Could not load the Ancestry. Please check your notifications.
@@ -62,6 +70,8 @@ export default function AncestryOpts({
   }
 
   if (data) {
+    console.log(data);
+
     const updateBoost = (i, ability) => {
       let a = { ...ancestry };
       let bs = a.boosts;
@@ -77,6 +87,7 @@ export default function AncestryOpts({
       a.flaws = fs;
       setAncestry(a);
     };
+    
     const { description, boosts } = data;
     const boostsData = getSegmentedControlDataFromBoosts(true, boosts);
     const flawsData = getSegmentedControlDataFromBoosts(false, boosts);
@@ -95,13 +106,13 @@ export default function AncestryOpts({
         {boostsData.length > 0 && (
           <>
             <Text>Boosts</Text>
-            {boostsData.map((b, i) => (
+            {ancestry.boosts.map((b, i) => (
               <SegmentedControl
-                color={ancestry.boosts[i] ? "blue" : "dark"}
+                color={b ? "blue" : "dark"}
                 key={`ancestry-boost-${i}`}
-                value={ancestry.boosts[i]}
+                value={b}
                 onChange={(a) => updateBoost(i, a)}
-                data={b}
+                data={boostsData[i]}
               />
             ))}
             {ancestry.boosts.includes("") && (
@@ -112,13 +123,13 @@ export default function AncestryOpts({
         {flawsData.length > 0 && (
           <>
             <Text>Flaws</Text>
-            {flawsData.map((f, i) => (
+            {ancestry.flaws.map((f, i) => (
               <SegmentedControl
-                color={ancestry.flaws[i] ? "pink" : "dark"}
+                color={f ? "pink" : "dark"}
                 key={`ancestry-flaw-${i}`}
-                value={ancestry.flaws[i]}
+                value={f}
                 onChange={(a) => updateFlaw(i, a)}
-                data={f}
+                data={flawsData[i]}
               />
             ))}
             {ancestry.flaws.includes("") && (
@@ -129,4 +140,6 @@ export default function AncestryOpts({
       </Stack>
     );
   }
+
+  return <Alert color="red'">Could not generate JSX</Alert>;
 }

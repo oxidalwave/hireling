@@ -9,8 +9,7 @@ export default function Background({ background, setBackground, backgrounds }) {
   };
 
   const val =
-    backgrounds.filter((b) => b.value === background.id)[0]?.value ??
-    "";
+    backgrounds.filter((b) => b.value === background.id)[0]?.value ?? "";
 
   return (
     <Stack>
@@ -21,7 +20,9 @@ export default function Background({ background, setBackground, backgrounds }) {
         data={backgrounds}
         label="Background"
       />
-      <BackgroundOpts background={background} setBackground={setBackground} />
+      {val !== "" && (
+        <BackgroundOpts background={background} setBackground={setBackground} />
+      )}
     </Stack>
   );
 }

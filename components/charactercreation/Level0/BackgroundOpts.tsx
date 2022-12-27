@@ -6,31 +6,46 @@ import {
   Stack,
   Text,
 } from "@mantine/core";
+import { showNotification } from "@mantine/notifications";
 import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
 import RichTextEditor from "components/RichTextEditor";
 import { getSegmentedControlDataFromBoosts } from "lib/boosts/boostUtils";
 
 export default function BackgroundOpts({ background, setBackground }) {
+  console.log(background);
   const { data, isLoading, error } = useQuery({
-    queryKey: ["backgrounds", background?.id || "0"],
+    queryKey: ["backgrounds", background.id],
     queryFn: () =>
       axios
         .get(`http://localhost:3000/api/backgrounds/${background.id}`)
         .then((r) => r.data),
     onSuccess: ({ boosts }) => {
       const a = { ...background };
-      a.boosts = Array.from(Array(getSegmentedControlDataFromBoosts(true, boosts).length).keys()).map((i) => "");
-      a.flaws = Array.from(Array(getSegmentedControlDataFromBoosts(false, boosts).length).keys()).map((i) => "");
+      a.boosts = Array.from(
+        Array(getSegmentedControlDataFromBoosts(true, boosts).length).keys()
+      ).map((i) => "");
+      a.flaws = Array.from(
+        Array(getSegmentedControlDataFromBoosts(false, boosts).length).keys()
+      ).map((i) => "");
       setBackground(a);
     },
+    onError: (e: Error) => {
+      showNotification({
+        title: "Could not load Background",
+        message: e.toString(),
+      });
+    },
+    refetchOnWindowFocus: false,
   });
 
   if (isLoading) {
+    console.log(`Loading Background ${background.id}`);
     return <Loader />;
   }
 
   if (error) {
+    console.error(error);
     return (
       <Alert color="red">
         Could not load the Ancestry. Please check your notifications.
@@ -38,23 +53,25 @@ export default function BackgroundOpts({ background, setBackground }) {
     );
   }
 
-  const updateBoost = (i, ability) => {
-    let b = { ...background };
-    let bs = b.boosts;
-    bs[i] = ability;
-    b.boosts = bs;
-    setBackground(b);
-  };
-
-  const updateFlaw = (i, ability) => {
-    let b = { ...background };
-    let fs = b.flaws;
-    fs[i] = ability;
-    b.flaws = fs;
-    setBackground(b);
-  };
-
   if (data) {
+    console.log(data);
+
+    const updateBoost = (i, ability) => {
+      let b = { ...background };
+      let bs = b.boosts;
+      bs[i] = ability;
+      b.boosts = bs;
+      setBackground(b);
+    };
+  
+    const updateFlaw = (i, ability) => {
+      let b = { ...background };
+      let fs = b.flaws;
+      fs[i] = ability;
+      b.flaws = fs;
+      setBackground(b);
+    };
+
     const { description, boosts } = data;
     const boostsData = getSegmentedControlDataFromBoosts(true, boosts);
     const flawsData = getSegmentedControlDataFromBoosts(false, boosts);
@@ -73,13 +90,13 @@ export default function BackgroundOpts({ background, setBackground }) {
         {boostsData.length > 0 && (
           <>
             <Text>Boosts</Text>
-            {boostsData.map((b, i) => (
+            {background.boosts.map((b, i) => (
               <SegmentedControl
-                color={background.boosts[i] ? "blue" : "dark"}
+                color={b ? "blue" : "dark"}
                 key={`background-boost-${i}`}
-                value={background.boosts[i]}
+                value={b}
                 onChange={(a) => updateBoost(i, a)}
-                data={b}
+                data={boostsData[i]}
               />
             ))}
             {background.boosts.includes("") && (
@@ -90,13 +107,13 @@ export default function BackgroundOpts({ background, setBackground }) {
         {flawsData.length > 0 && (
           <>
             <Text>Flaws</Text>
-            {flawsData.map((f, i) => (
+            {background.flaws.map((f, i) => (
               <SegmentedControl
-                color={background.flaws[i] ? "pink" : "dark"}
+                color={f ? "pink" : "dark"}
                 key={`background-flaw-${i}`}
-                value={background.flaws[i]}
+                value={f}
                 onChange={(a) => updateFlaw(i, a)}
-                data={f}
+                data={flawsData[i]}
               />
             ))}
             {background.flaws.includes("") && (
@@ -107,4 +124,6 @@ export default function BackgroundOpts({ background, setBackground }) {
       </Stack>
     );
   }
+
+  return <Alert color="red'">Could not generate JSX</Alert>;
 }

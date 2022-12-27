@@ -8,9 +8,7 @@ const Ancestry = ({ ancestry, setAncestry, ancestries }) => {
     setAncestry(ancestrycopy);
   };
 
-  const val =
-    ancestries.filter((a) => a.value === ancestry.id)[0]?.value ??
-    "";
+  const val = ancestries.filter((a) => a.value === ancestry.id)[0]?.value ?? "";
 
   return (
     <Stack>
@@ -21,7 +19,9 @@ const Ancestry = ({ ancestry, setAncestry, ancestries }) => {
         data={ancestries}
         label="Ancestry"
       />
-      <AncestryOpts ancestry={ancestry} setAncestry={setAncestry} />
+      {val !== "" && (
+        <AncestryOpts ancestry={ancestry} setAncestry={setAncestry} />
+      )}
     </Stack>
   );
 };

@@ -10,10 +10,11 @@ import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
 import RichTextEditor from "components/RichTextEditor";
 import { getSegmentedControlDataFromBoosts } from "lib/boosts/boostUtils";
+import Boost from "./Boost";
 import FeatSelection from "./FeatSelection";
 
 export interface PlayerClassOptsProps {
-  playerClass: { id: string; boost?: string; featId?: string };
+  playerClass: { id: string; boost: string; featId?: string };
   setPlayerClass;
 }
 
@@ -103,12 +104,10 @@ export default function PlayerClassOpts({
                 id="playerClassDescription"
               />
             </ScrollArea.Autosize>
-            <SegmentedControl
-              color={playerClass.boost ? "blue" : "dark"}
-              key={`player-class-boost`}
+            <Boost
+              choices={boostsData[0]}
               value={playerClass.boost}
-              onChange={updateBoost}
-              data={boostsData[0]}
+              setValue={updateBoost}
             />
           </>
         )}
