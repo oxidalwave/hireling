@@ -10,13 +10,11 @@ import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
 import RichTextEditor from "components/RichTextEditor";
 import { getSegmentedControlDataFromBoosts } from "lib/boosts/boostUtils";
+import { NewPlayerCharacterAncestry } from "types/PlayerCharacter";
 import Boost from "../Boost";
 
 interface AncestryOptsProps {
-  ancestry: {
-    id: string;
-    boosts: string[];
-  };
+  ancestry: NewPlayerCharacterAncestry;
   setAncestry;
 }
 
@@ -95,13 +93,13 @@ export default function AncestryOpts({
             {ancestry.boosts.map((b, i) => (
               <Boost
                 key={`ancestry-boost-${i}`}
-                value={b}
+                value={b.id}
                 setValue={(a) => updateBoost(i, a)}
                 choices={boostsData[i]}
                 isFlaw={!boosts[i].isBoost}
               />
             ))}
-            {ancestry.boosts.includes("") && (
+            {ancestry.boosts.find((b) => b.id === "") && (
               <Alert color="red">Please confirm all Boosts are selected.</Alert>
             )}
           </>

@@ -1,9 +1,4 @@
-import {
-  TextInput,
-  Stack,
-  Button,
-  Alert,
-} from "@mantine/core";
+import { TextInput, Stack, Button, Alert, Text } from "@mantine/core";
 import { useState } from "react";
 import Ancestry from "components/charactercreation/Level0/ancestry/Ancestry";
 import { useSession } from "next-auth/react";
@@ -20,6 +15,7 @@ import {
   NewPlayerCharacterPlayerClass,
 } from "types/PlayerCharacter";
 import FreeBoosts from "./Level0/FreeBoosts";
+import AncestryOpts from "./Level0/ancestry/AncestryOpts";
 
 const Level0 = ({ ancestries, backgrounds, playerClasses }) => {
   const { data: session } = useSession();
@@ -27,12 +23,12 @@ const Level0 = ({ ancestries, backgrounds, playerClasses }) => {
   const [name, setName] = useState("");
   const [ancestry, setAncestry] = useState<NewPlayerCharacterAncestry>({
     id: "",
-    boosts: []
+    boosts: [],
   });
   const [background, setBackground] = useState<NewPlayerCharacterBackground>({
     id: "",
     boosts: [],
-    flaws: []
+    flaws: [],
   });
   const [playerClass, setPlayerClass] = useState<NewPlayerCharacterPlayerClass>(
     { id: "", feat: "", boost: { id: "" } }
@@ -51,7 +47,7 @@ const Level0 = ({ ancestries, backgrounds, playerClasses }) => {
     playerClass.boost ?? { id: "" },
     ...(freeBoosts ?? []),
   ].filter(({ id }) => id !== "");
-  const flaws = [...(ancestry.flaws ?? []), ...(background.flaws ?? [])];
+  const flaws = [];
 
   const payload = {
     name,
@@ -90,13 +86,16 @@ const Level0 = ({ ancestries, backgrounds, playerClasses }) => {
         onChange={(e) => setName(e.currentTarget.value)}
       />
       <Ancestry
-        ancestry={ancestry}
-        setAncestry={setAncestry}
-        ancestries={ancestries.map((a) => ({
+        label="Ancestry"
+        option={ancestry}
+        setOption={setAncestry}
+        options={ancestries.map((a) => ({
           label: a.name,
           value: a.id,
         }))}
-      />
+      >
+        <AncestryOpts ancestry={ancestry} setAncestry={setAncestry} />
+      </Ancestry>
       <Background
         background={background}
         setBackground={setBackground}

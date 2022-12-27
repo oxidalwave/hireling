@@ -4,8 +4,7 @@ export type NewPlayerCharacterFreeBoost = Boost;
 
 export type NewPlayerCharacterAncestry = {
   id: string;
-  boosts?: Boost[];
-  flaws?: Boost[];
+  boosts: Boost[];
 }
 
 export type NewPlayerCharacterBackground = {
