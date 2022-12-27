@@ -3,6 +3,7 @@ import { showNotification } from "@mantine/notifications";
 import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
 import { getSegmentedControlDataFromBoosts } from "lib/boosts/boostUtils";
+import Boost from "./Boost";
 
 export interface FreeBoostsProps {
   count: number;
@@ -57,24 +58,52 @@ export default function FreeBoosts({ boosts, setBoosts, count = 4 }) {
   );
 
   const freeBoostData = data.map((b, i) => [
-    { label: 'Strength', value: b.abilityScores.find((as) => as.abilityScore.abbreviatedName === 'str').id },
-    { label: 'Dexterity', value: b.abilityScores.find((as) => as.abilityScore.abbreviatedName === 'dex').id },
-    { label: 'Constitution', value: b.abilityScores.find((as) => as.abilityScore.abbreviatedName === 'con').id },
-    { label: 'Intelligence', value: b.abilityScores.find((as) => as.abilityScore.abbreviatedName === 'int').id },
-    { label: 'Wisdom', value: b.abilityScores.find((as) => as.abilityScore.abbreviatedName === 'wis').id },
-    { label: 'Charisma', value: b.abilityScores.find((as) => as.abilityScore.abbreviatedName === 'cha').id },
-  ]
-);
+    {
+      label: "Strength",
+      value: b.abilityScores.find(
+        (as) => as.abilityScore.abbreviatedName === "str"
+      ).id,
+    },
+    {
+      label: "Dexterity",
+      value: b.abilityScores.find(
+        (as) => as.abilityScore.abbreviatedName === "dex"
+      ).id,
+    },
+    {
+      label: "Constitution",
+      value: b.abilityScores.find(
+        (as) => as.abilityScore.abbreviatedName === "con"
+      ).id,
+    },
+    {
+      label: "Intelligence",
+      value: b.abilityScores.find(
+        (as) => as.abilityScore.abbreviatedName === "int"
+      ).id,
+    },
+    {
+      label: "Wisdom",
+      value: b.abilityScores.find(
+        (as) => as.abilityScore.abbreviatedName === "wis"
+      ).id,
+    },
+    {
+      label: "Charisma",
+      value: b.abilityScores.find(
+        (as) => as.abilityScore.abbreviatedName === "cha"
+      ).id,
+    },
+  ]);
 
   return (
     <>
       {freeBoostData.map((b, i) => (
-        <SegmentedControl
-          color={b ? "blue" : "dark"}
+        <Boost
           key={`free-boost-${i}`}
           value={boosts[i]}
-          onChange={(a) => updateBoost(i, a)}
-          data={b}
+          setValue={(a) => updateBoost(i, a)}
+          choices={b}
         />
       ))}
     </>
