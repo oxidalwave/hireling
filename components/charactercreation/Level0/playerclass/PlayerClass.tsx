@@ -1,5 +1,5 @@
 import { Select, Stack } from "@mantine/core";
-import PlayerClassOpts from "./PlayerClassOpts";
+import PlayerClassOptsLoader from "./PlayerClassOptsLoader";
 
 export interface PlayerClassProps {
   playerClass: { id: string; boost?: string; feat?: string };
@@ -29,7 +29,7 @@ export default function PlayerClass({
         label="Class"
       />
       {val !== "" && (
-        <PlayerClassOpts
+        <PlayerClassOptsLoader
           playerClass={playerClass}
           setPlayerClass={setPlayerClass}
         />

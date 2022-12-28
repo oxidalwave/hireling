@@ -1,5 +1,20 @@
-import Option from "../OptionWithSuboption";
+import CharacterOption from "../CharacterOption";
+import AncestryOptsLoader from "./AncestryOptsLoader";
 
-const Ancestry = Option<{ boosts: string[] }>;
-
-export default Ancestry;
+export default function Ancestry({ ancestry, setAncestry, ancestries }) {
+  return (
+    <CharacterOption
+      label="Ancestry"
+      option={ancestry}
+      setOption={setAncestry}
+      options={ancestries.map((a) => ({
+        label: a.name,
+        value: a.id,
+      }))}
+    >
+      {ancestry.id !== "" && (
+        <AncestryOptsLoader ancestry={ancestry} setAncestry={setAncestry} />
+      )}
+    </CharacterOption>
+  );
+}

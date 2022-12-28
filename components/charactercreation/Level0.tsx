@@ -1,8 +1,6 @@
-import { TextInput, Stack, Button, Alert, Text } from "@mantine/core";
+import { TextInput, Stack, Button, Alert } from "@mantine/core";
 import { useState } from "react";
-import Ancestry from "components/charactercreation/Level0/ancestry/Ancestry";
 import { useSession } from "next-auth/react";
-import Background from "./Level0/background/Background";
 import PlayerClass from "./Level0/playerclass/PlayerClass";
 import AbilityScores from "./Level0/AbilityScores";
 import axios from "axios";
@@ -15,7 +13,10 @@ import {
   NewPlayerCharacterPlayerClass,
 } from "types/PlayerCharacter";
 import FreeBoosts from "./Level0/FreeBoosts";
-import AncestryOpts from "./Level0/ancestry/AncestryOpts";
+import CharacterOption from "./Level0/CharacterOption";
+import BackgroundOpts from "./Level0/background/BackgroundOpts";
+import Ancestry from "./Level0/ancestry/Ancestry";
+import Background from "./Level0/background/Background";
 
 const Level0 = ({ ancestries, backgrounds, playerClasses }) => {
   const { data: session } = useSession();
@@ -28,7 +29,6 @@ const Level0 = ({ ancestries, backgrounds, playerClasses }) => {
   const [background, setBackground] = useState<NewPlayerCharacterBackground>({
     id: "",
     boosts: [],
-    flaws: [],
   });
   const [playerClass, setPlayerClass] = useState<NewPlayerCharacterPlayerClass>(
     { id: "", feat: "", boost: { id: "" } }
@@ -47,7 +47,6 @@ const Level0 = ({ ancestries, backgrounds, playerClasses }) => {
     playerClass.boost ?? { id: "" },
     ...(freeBoosts ?? []),
   ].filter(({ id }) => id !== "");
-  const flaws = [];
 
   const payload = {
     name,
@@ -75,8 +74,9 @@ const Level0 = ({ ancestries, backgrounds, playerClasses }) => {
     ancestry &&
     background &&
     playerClass &&
-    !boosts.find(({ id }) => id === "") &&
-    !flaws.find(({ id }) => id === "");
+    !boosts.find(({ id }) => id === "");
+
+  console.log(ancestry)
 
   return (
     <Stack>
@@ -86,23 +86,14 @@ const Level0 = ({ ancestries, backgrounds, playerClasses }) => {
         onChange={(e) => setName(e.currentTarget.value)}
       />
       <Ancestry
-        label="Ancestry"
-        option={ancestry}
-        setOption={setAncestry}
-        options={ancestries.map((a) => ({
-          label: a.name,
-          value: a.id,
-        }))}
-      >
-        <AncestryOpts ancestry={ancestry} setAncestry={setAncestry} />
-      </Ancestry>
+        ancestry={ancestry}
+        setAncestry={setAncestry}
+        ancestries={ancestries}
+      />
       <Background
         background={background}
         setBackground={setBackground}
-        backgrounds={backgrounds.map((b) => ({
-          label: b.name,
-          value: b.id,
-        }))}
+        backgrounds={backgrounds}
       />
       <PlayerClass
         playerClass={playerClass}
@@ -113,7 +104,7 @@ const Level0 = ({ ancestries, backgrounds, playerClasses }) => {
         }))}
       />
       <FreeBoosts boosts={freeBoosts} setBoosts={setFreeBoosts} />
-      <AbilityScores boosts={[...boosts, ...flaws]} />
+      <AbilityScores boosts={boosts} />
       {shouldValidate && !isValid ? (
         <Alert color="red">There is an unselected input.</Alert>
       ) : (

@@ -1,7 +1,6 @@
 import {
   Alert,
   Card,
-  Loader,
   NumberInput,
   SimpleGrid,
   Text,

@@ -9,17 +9,26 @@ interface Choice {
 interface BoostProps {
   choices: Choice[];
   value: string;
-  setValue;
-  isFlaw?: boolean
+  onChange;
+  isFlaw?: boolean;
 }
 
-export default function Boost({ choices, value, setValue, isFlaw }: BoostProps) {
-  const color = isFlaw ? 'pink' : 'blue';
+export default function Boost({
+  choices,
+  value,
+  onChange,
+  isFlaw,
+}: BoostProps) {
+  const color = isFlaw ? "pink" : "blue";
 
-  return <SegmentedControl
-    value={value}
-    onChange={setValue}
-    data={choices}
-    color={choices ? color : 'dark'}
-  />;
+  console.log(value)
+
+  return (
+    <SegmentedControl
+      value={value}
+      onChange={onChange}
+      data={choices}
+      color={value !== "" ? color : "dark"}
+    />
+  );
 }

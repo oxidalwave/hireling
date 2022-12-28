@@ -1,6 +1,6 @@
-import { Select, Stack, Text } from "@mantine/core";
+import { Select, Stack } from "@mantine/core";
 
-export interface OptionProps<T> {
+export interface CharacterOptionProps<T> {
   option: { id: string } & T;
   setOption;
   options: { label: string; value: string }[];
@@ -8,7 +8,7 @@ export interface OptionProps<T> {
   children
 }
 
-export default function Option<T>({ option, setOption, options, label, children }) {
+export default function CharacterOption<T>({ option, setOption, options, label, children }) {
   const updateOption = (o) => {
     const copy = { ...option };
     copy.id = o;

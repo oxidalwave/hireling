@@ -1,28 +1,23 @@
-import { Select, Stack } from "@mantine/core";
-import BackgroundOpts from "./BackgroundOpts";
+import CharacterOption from "../CharacterOption";
+import BackgroundOptsLoader from "./BackgroundOptsLoader";
 
 export default function Background({ background, setBackground, backgrounds }) {
-  const updateBackground = (b) => {
-    const backgroundcopy = { ...background };
-    backgroundcopy.id = b;
-    setBackground(backgroundcopy);
-  };
-
-  const val =
-    backgrounds.filter((b) => b.value === background.id)[0]?.value ?? "";
-
   return (
-    <Stack>
-      <Select
-        searchable
-        value={val}
-        onChange={updateBackground}
-        data={backgrounds}
-        label="Background"
-      />
-      {val !== "" && (
-        <BackgroundOpts background={background} setBackground={setBackground} />
+    <CharacterOption
+      label="Background"
+      option={background}
+      setOption={setBackground}
+      options={backgrounds.map((b) => ({
+        label: b.name,
+        value: b.id,
+      }))}
+    >
+      {background.id !== "" && (
+        <BackgroundOptsLoader
+          background={background}
+          setBackground={setBackground}
+        />
       )}
-    </Stack>
+    </CharacterOption>
   );
 }

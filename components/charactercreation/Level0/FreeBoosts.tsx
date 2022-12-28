@@ -19,14 +19,8 @@ export default function FreeBoosts({ boosts, setBoosts, count = 4 }) {
         .then((r) => r.data),
     queryKey: ["boost", "free"],
     onSuccess: (d) => {
-      let a = d.map((b, i) =>
-        b.abilityScores.map(({ id, abilityScore }, asi) => ({
-          label: abilityScore.name,
-          value: id,
-        }))
-      );
-
-      setBoosts(a.map(() => ""));
+      console.log(d)
+      setBoosts(d.map((a) => ''));
     },
     onError: (e: Error) => {
       showNotification({
@@ -102,7 +96,7 @@ export default function FreeBoosts({ boosts, setBoosts, count = 4 }) {
         <Boost
           key={`free-boost-${i}`}
           value={boosts[i]}
-          setValue={(a) => updateBoost(i, a)}
+          onChange={(a) => updateBoost(i, a)}
           choices={b}
         />
       ))}
