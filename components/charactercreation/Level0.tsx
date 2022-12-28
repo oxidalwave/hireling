@@ -6,32 +6,28 @@ import AbilityScores from "./Level0/AbilityScores";
 import axios from "axios";
 import { showNotification } from "@mantine/notifications";
 import {
-  Boost,
   NewPlayerCharacterAncestry,
   NewPlayerCharacterBackground,
   NewPlayerCharacterFreeBoost,
   NewPlayerCharacterPlayerClass,
+  ResourceById,
 } from "types/PlayerCharacter";
 import FreeBoosts from "./Level0/FreeBoosts";
-import CharacterOption from "./Level0/CharacterOption";
-import BackgroundOpts from "./Level0/background/BackgroundOpts";
 import Ancestry from "./Level0/ancestry/Ancestry";
 import Background from "./Level0/background/Background";
 
 const Level0 = ({ ancestries, backgrounds, playerClasses }) => {
-  const { data: session } = useSession();
-
-  const [name, setName] = useState("");
+  const [name, setName] = useState<string>("");
   const [ancestry, setAncestry] = useState<NewPlayerCharacterAncestry>({
     id: "",
-    boosts: [],
+    boostIds: [],
   });
   const [background, setBackground] = useState<NewPlayerCharacterBackground>({
     id: "",
-    boosts: [],
+    boostIds: [],
   });
   const [playerClass, setPlayerClass] = useState<NewPlayerCharacterPlayerClass>(
-    { id: "", feat: "", boost: { id: "" } }
+    { id: "", featId: "", boostId: "" }
   );
 
   const [freeBoosts, setFreeBoosts] = useState<NewPlayerCharacterFreeBoost[]>([
@@ -41,19 +37,13 @@ const Level0 = ({ ancestries, backgrounds, playerClasses }) => {
     { id: "" },
   ]);
 
-  const boosts: Boost[] = [
-    ...(ancestry.boosts ?? []),
-    ...(background.boosts ?? []),
-    playerClass.boost ?? { id: "" },
-    ...(freeBoosts ?? []),
-  ].filter(({ id }) => id !== "");
+  const boosts: ResourceById[] = freeBoosts.filter(({ id }) => id !== "");
 
   const payload = {
     name,
-    ancestry: { id: ancestry.id },
-    background: { id: background.id },
-    playerClass: { id: playerClass.id },
-    boosts: boosts.map((id) => ({ id })),
+    ancestry,
+    background,
+    playerClass,
   };
 
   const logCharacter = () => console.log(payload);
@@ -76,7 +66,7 @@ const Level0 = ({ ancestries, backgrounds, playerClasses }) => {
     playerClass &&
     !boosts.find(({ id }) => id === "");
 
-  console.log(ancestry)
+  console.log(ancestry);
 
   return (
     <Stack>

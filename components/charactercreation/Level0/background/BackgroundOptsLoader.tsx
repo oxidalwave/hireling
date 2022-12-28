@@ -14,7 +14,7 @@ export default function BackgroundOptsLoader({ background, setBackground }) {
     onSuccess: (d) => {
       const a = { ...background };
       console.log(d)
-      a.boosts = d.boosts.map(() => '');
+      a.boostIds = d.boosts.map(() => '');
       setBackground(a);
     },
     onError: (e: Error) => {

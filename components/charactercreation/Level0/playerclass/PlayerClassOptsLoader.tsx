@@ -1,16 +1,15 @@
-import { Alert, Loader, ScrollArea, Stack } from "@mantine/core";
+import { Alert, Loader } from "@mantine/core";
 import { showNotification } from "@mantine/notifications";
 import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
-import RichTextEditor from "components/RichTextEditor";
 import { getSegmentedControlDataFromBoosts } from "lib/boosts/boostUtils";
-import Boost from "../Boost";
-import FeatSelection from "../feat/FeatSelection";
+import { Dispatch } from "react";
+import { NewPlayerCharacterPlayerClass } from "types/PlayerCharacter";
 import PlayerClassOpts from "./PlayerClassOpts";
 
 export interface PlayerClassOptsProps {
-  playerClass: { id: string; boost: string; featId?: string };
-  setPlayerClass;
+  playerClass: NewPlayerCharacterPlayerClass;
+  setPlayerClass: Dispatch<NewPlayerCharacterPlayerClass>;
 }
 
 export default function PlayerClassOptsLoader({
@@ -28,8 +27,9 @@ export default function PlayerClassOptsLoader({
         .get(`http://localhost:3000/api/playerclasses/${playerClass.id}`)
         .then((r) => r.data),
     onSuccess: (d) => {
+      console.log(d);
       const pc = { ...playerClass };
-      pc.boost = '';
+      pc.boostId = "";
       setPlayerClass(pc);
     },
     onError: (e: Error) => {
@@ -38,6 +38,7 @@ export default function PlayerClassOptsLoader({
         message: e.toString(),
       });
     },
+    refetchOnWindowFocus: false,
   });
 
   const {

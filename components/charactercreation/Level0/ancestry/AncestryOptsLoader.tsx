@@ -30,7 +30,7 @@ export default function AncestryOptsLoader({
     onSuccess: (d) => {
       console.log(d)
       const a = { ...ancestry };
-      a.boosts = d.boosts.map((a) => '');
+      a.boostIds = d.boosts.map((a) => '');
       setAncestry(a);
     },
     onError: (e: Error) => {

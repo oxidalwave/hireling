@@ -1,12 +1,15 @@
 import {
   Alert,
   Card,
+  LoadingOverlay,
   NumberInput,
   SimpleGrid,
   Text,
 } from "@mantine/core";
 import { useQueries } from "@tanstack/react-query";
 import axios from "axios";
+import { relative } from "path";
+import { ResourceById } from "types/PlayerCharacter";
 
 type AbilityScoresArray = {
   str: number;
@@ -18,7 +21,7 @@ type AbilityScoresArray = {
 };
 
 type AbilityScoresProps = {
-  boosts;
+  boosts: ResourceById[];
 };
 
 const AbilityScores = ({ boosts }: AbilityScoresProps) => {
@@ -26,8 +29,8 @@ const AbilityScores = ({ boosts }: AbilityScoresProps) => {
 
   const results = useQueries({
     queries: boosts
-      .filter((id) => id !== "")
-      .map((id) => ({
+      .filter(({ id }) => id !== "")
+      .map(({ id }) => ({
         queryFn: () =>
           axios
             .get(`http://localhost:3000/api/abilityscoreboosts/${id}`)
@@ -40,14 +43,17 @@ const AbilityScores = ({ boosts }: AbilityScoresProps) => {
     return (
       <Card>
         <Text>Ability Scores</Text>
-        <SimpleGrid cols={6}>
-          <NumberInput readOnly label="Strength" value={0} />
-          <NumberInput readOnly label="Dexterity" value={0} />
-          <NumberInput readOnly label="Constitution" value={0} />
-          <NumberInput readOnly label="Intelligence" value={0} />
-          <NumberInput readOnly label="Wisdom" value={0} />
-          <NumberInput readOnly label="Charisma" value={0} />
-        </SimpleGrid>
+        <div style={{ position: "relative" }}>
+          <LoadingOverlay visible={true} />
+          <SimpleGrid cols={6}>
+            <NumberInput readOnly label="Strength" value={0} />
+            <NumberInput readOnly label="Dexterity" value={0} />
+            <NumberInput readOnly label="Constitution" value={0} />
+            <NumberInput readOnly label="Intelligence" value={0} />
+            <NumberInput readOnly label="Wisdom" value={0} />
+            <NumberInput readOnly label="Charisma" value={0} />
+          </SimpleGrid>
+        </div>
       </Card>
     );
   }
@@ -55,8 +61,6 @@ const AbilityScores = ({ boosts }: AbilityScoresProps) => {
   if (results.find((r) => r.error)) {
     return <Alert color="red">Could not obtain ability score</Alert>;
   }
-
-  console.log(results);
 
   const getModsFor: (abilityScoreAbbreviation: string) => number = (
     abilityScoreAbbreviation: string

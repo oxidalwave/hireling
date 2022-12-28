@@ -1,22 +1,20 @@
-export type Boost = { id: string }
-
-export type NewPlayerCharacterFreeBoost = Boost;
-
-export type NewPlayerCharacterAncestry = {
+export type ResourceById = {
   id: string;
-  boosts: Boost[];
 }
 
-export type NewPlayerCharacterBackground = {
-  id: string;
-  boosts?: Boost[];
-  flaws?: Boost[];
+export type NewPlayerCharacterFreeBoost = ResourceById;
+
+export type NewPlayerCharacterAncestry = ResourceById & {
+  boostIds: string[];
 }
 
-export type NewPlayerCharacterPlayerClass = {
-  id: string;
-  feat?: string;
-  boost?: Boost;
+export type NewPlayerCharacterBackground = ResourceById & {
+  boostIds: string[];
+}
+
+export type NewPlayerCharacterPlayerClass = ResourceById & {
+  featId: string;
+  boostId: string;
 }
 
 export default interface NewPlayerCharacter {

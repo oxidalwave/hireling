@@ -1,5 +1,13 @@
+import { Dispatch } from "react";
+import { NewPlayerCharacterBackground } from "types/PlayerCharacter";
 import CharacterOption from "../CharacterOption";
 import BackgroundOptsLoader from "./BackgroundOptsLoader";
+
+interface BackgroundProps {
+  background: NewPlayerCharacterBackground;
+  setBackground: Dispatch<NewPlayerCharacterBackground>;
+  backgrounds: { name: string, id: string }[]
+}
 
 export default function Background({ background, setBackground, backgrounds }) {
   return (

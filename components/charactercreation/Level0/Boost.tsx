@@ -1,4 +1,5 @@
 import { SegmentedControl } from "@mantine/core";
+import { Dispatch } from "react";
 
 interface Choice {
   label: string;
@@ -9,7 +10,7 @@ interface Choice {
 interface BoostProps {
   choices: Choice[];
   value: string;
-  onChange;
+  onChange: Dispatch<string>;
   isFlaw?: boolean;
 }
 

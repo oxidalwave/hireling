@@ -2,13 +2,14 @@ import { Alert, Loader, SegmentedControl } from "@mantine/core";
 import { showNotification } from "@mantine/notifications";
 import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
-import { getSegmentedControlDataFromBoosts } from "lib/boosts/boostUtils";
+import { Dispatch } from "react";
+import { ResourceById } from "types/PlayerCharacter";
 import Boost from "./Boost";
 
 export interface FreeBoostsProps {
   count: number;
-  boosts;
-  setBoosts;
+  boosts: ResourceById[];
+  setBoosts: Dispatch<ResourceById[]>;
 }
 
 export default function FreeBoosts({ boosts, setBoosts, count = 4 }) {
@@ -19,8 +20,8 @@ export default function FreeBoosts({ boosts, setBoosts, count = 4 }) {
         .then((r) => r.data),
     queryKey: ["boost", "free"],
     onSuccess: (d) => {
-      console.log(d)
-      setBoosts(d.map((a) => ''));
+      console.log(d);
+      setBoosts(d.map(() => ({ id: "" })));
     },
     onError: (e: Error) => {
       showNotification({
@@ -28,11 +29,12 @@ export default function FreeBoosts({ boosts, setBoosts, count = 4 }) {
         message: e.toString(),
       });
     },
+    refetchOnWindowFocus: false,
   });
 
-  const updateBoost = (i, a) => {
+  const updateBoost = (i: number) => (a: string) => {
     let b = [...boosts];
-    b[i] = a;
+    b[i] = { id: a };
     setBoosts(b);
   };
 
@@ -90,13 +92,15 @@ export default function FreeBoosts({ boosts, setBoosts, count = 4 }) {
     },
   ]);
 
+  console.log(boosts);
+
   return (
     <>
       {freeBoostData.map((b, i) => (
         <Boost
           key={`free-boost-${i}`}
-          value={boosts[i]}
-          onChange={(a) => updateBoost(i, a)}
+          value={boosts[i].id}
+          onChange={updateBoost(i)}
           choices={b}
         />
       ))}

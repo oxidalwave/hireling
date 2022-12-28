@@ -6,15 +6,23 @@ import {
 } from "@mantine/core";
 import RichTextEditor from "components/RichTextEditor";
 import { getSegmentedControlDataFromBoosts } from "lib/boosts/boostUtils";
+import { Dispatch } from "react";
+import { NewPlayerCharacterBackground } from "types/PlayerCharacter";
 import Boost from "../Boost";
+
+interface BackgroundOptsProps {
+  background: NewPlayerCharacterBackground;
+  setBackground: Dispatch<NewPlayerCharacterBackground>;
+  data;
+}
 
 export default function BackgroundOpts({ background, setBackground, data }) {
   const { description, boosts } = data;
   const boostsData = getSegmentedControlDataFromBoosts(boosts);
 
-  const updateBoost = (ability, i) => {
+  const updateBoost = (i: number) => (ability: string) => {
     let b = { ...background };
-    let bs = b.boosts;
+    let bs = b.boostIds;
     bs[i] = ability;
     b.boosts = bs;
     setBackground(b);
@@ -29,19 +37,19 @@ export default function BackgroundOpts({ background, setBackground, data }) {
           id="backgroundDescription"
         />
       </ScrollArea.Autosize>
-      {background.boosts.length > 0 && (
+      {background.boostIds.length > 0 && (
         <>
           <Text>Boosts</Text>
-          {background.boosts.map((id, i) => (
+          {background.boostIds.map((id: string, i: number) => (
             <Boost
               key={`background-boost-${i}`}
               value={id}
-              onChange={(a) => updateBoost(a, i)}
+              onChange={updateBoost(i)}
               choices={boostsData[i]}
               isFlaw={!boosts[i].isBoost}
             />
           ))}
-          {background.boosts.find((b) => b.id === "") && (
+          {background.boostIds.find((b: string) => b === "") && (
             <Alert color="red">Please confirm all Boosts are selected.</Alert>
           )}
         </>
