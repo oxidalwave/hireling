@@ -20,14 +20,14 @@ const Level0 = ({ ancestries, backgrounds, playerClasses }) => {
   const [name, setName] = useState<string>("");
   const [ancestry, setAncestry] = useState<NewPlayerCharacterAncestry>({
     id: "",
-    boostIds: [],
+    boosts: [],
   });
   const [background, setBackground] = useState<NewPlayerCharacterBackground>({
     id: "",
-    boostIds: [],
+    boosts: [],
   });
   const [playerClass, setPlayerClass] = useState<NewPlayerCharacterPlayerClass>(
-    { id: "", featId: "", boostId: "" }
+    { id: "", feat: { id: "" }, boost: { id: "" } }
   );
 
   const [freeBoosts, setFreeBoosts] = useState<NewPlayerCharacterFreeBoost[]>([
@@ -37,13 +37,21 @@ const Level0 = ({ ancestries, backgrounds, playerClasses }) => {
     { id: "" },
   ]);
 
-  const boosts: ResourceById[] = freeBoosts.filter(({ id }) => id !== "");
+  console.log(ancestry.boosts);
+  const boosts: ResourceById[] = [
+    ...ancestry.boosts,
+    ...background.boosts,
+    ...freeBoosts,
+    playerClass.boost ?? { id: "" },
+  ];
 
   const payload = {
     name,
-    ancestry,
-    background,
-    playerClass,
+    ancestry: {id: ancestry.id},
+    background: {id: background.id},
+    playerClass: {id: playerClass.id},
+    boosts,
+    feats: [playerClass.feat]
   };
 
   const logCharacter = () => console.log(payload);
@@ -58,12 +66,12 @@ const Level0 = ({ ancestries, backgrounds, playerClasses }) => {
     }
   };
 
-  const shouldValidate = false;
+  const shouldValidate = true;
   const isValid =
     name &&
-    ancestry &&
-    background &&
-    playerClass &&
+    ancestry.id &&
+    background.id &&
+    playerClass.id &&
     !boosts.find(({ id }) => id === "");
 
   console.log(ancestry);
@@ -98,7 +106,7 @@ const Level0 = ({ ancestries, backgrounds, playerClasses }) => {
       {shouldValidate && !isValid ? (
         <Alert color="red">There is an unselected input.</Alert>
       ) : (
-        <Button onClick={logCharacter}>SUBMIT</Button>
+        <Button onClick={createCharacter}>SUBMIT</Button>
       )}
     </Stack>
   );

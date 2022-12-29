@@ -1,21 +1,21 @@
 export type ResourceById = {
   id: string;
-}
+};
 
 export type NewPlayerCharacterFreeBoost = ResourceById;
 
 export type NewPlayerCharacterAncestry = ResourceById & {
-  boostIds: string[];
-}
+  boosts: ResourceById[];
+};
 
 export type NewPlayerCharacterBackground = ResourceById & {
-  boostIds: string[];
-}
+  boosts: ResourceById[];
+};
 
 export type NewPlayerCharacterPlayerClass = ResourceById & {
-  featId: string;
-  boostId: string;
-}
+  feat: { id: string };
+  boost: { id: string };
+};
 
 export default interface NewPlayerCharacter {
   name: string;

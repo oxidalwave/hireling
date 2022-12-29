@@ -13,8 +13,8 @@ export default function BackgroundOptsLoader({ background, setBackground }) {
         .then((r) => r.data),
     onSuccess: (d) => {
       const a = { ...background };
-      console.log(d)
-      a.boostIds = d.boosts.map(() => '');
+      console.log(d);
+      a.boosts = d.boosts.map(() => ({ id: "" }));
       setBackground(a);
     },
     onError: (e: Error) => {
@@ -40,7 +40,7 @@ export default function BackgroundOptsLoader({ background, setBackground }) {
   }
 
   if (data) {
-    console.log(background)
+    console.log(background);
     return (
       <BackgroundOpts
         background={background}

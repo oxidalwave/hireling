@@ -5,17 +5,23 @@ export interface CharacterOptionProps<T> {
   setOption;
   options: { label: string; value: string }[];
   label: string;
-  children
+  children;
 }
 
-export default function CharacterOption<T>({ option, setOption, options, label, children }) {
-  const updateOption = (o) => {
+export default function CharacterOption<T>({
+  option,
+  setOption,
+  options,
+  label,
+  children,
+}) {
+  const updateOption = (id) => {
     const copy = { ...option };
-    copy.id = o;
+    copy.id = id;
     setOption(copy);
   };
 
-  const val: string = options.find((o) => o.value === option.id)?.value ?? '';
+  const val: string = options.find((o) => o.value === option.id)?.value ?? "";
 
   return (
     <Stack>

@@ -23,13 +23,13 @@ export default function PlayerClassOpts({
 }: PlayerClassOptsProps) {
   const updateBoost = (a) => {
     let pc = { ...playerClass };
-    pc.boostId = a;
+    pc.boost = { id: a };
     setPlayerClass(pc);
   };
 
   const updateFeat = (f) => {
     const pc = { ...playerClass };
-    pc.featId = f;
+    pc.feat = { id: f };
     setPlayerClass(pc);
   };
 
@@ -44,11 +44,11 @@ export default function PlayerClassOpts({
       </ScrollArea.Autosize>
       <Boost
         choices={boostOptions}
-        value={playerClass.boostId}
+        value={playerClass.boost.id}
         onChange={updateBoost}
       />
       <FeatSelection
-        feat={playerClass.featId}
+        feat={playerClass.feat.id}
         setFeat={updateFeat}
         feats={featOptions}
       />

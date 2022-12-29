@@ -2,30 +2,46 @@ import { Dispatch } from "react";
 import { NewPlayerCharacterBackground } from "types/PlayerCharacter";
 import CharacterOption from "../CharacterOption";
 import BackgroundOptsLoader from "./BackgroundOptsLoader";
+import { Select, Stack } from "@mantine/core";
 
 interface BackgroundProps {
   background: NewPlayerCharacterBackground;
   setBackground: Dispatch<NewPlayerCharacterBackground>;
-  backgrounds: { name: string, id: string }[]
+  backgrounds: { name: string; id: string }[];
 }
 
-export default function Background({ background, setBackground, backgrounds }) {
+export default function Background({
+  background,
+  setBackground,
+  backgrounds,
+}: BackgroundProps) {
+  const updateBackground = (id) => {
+    setBackground({
+      id,
+      boosts: [],
+    });
+  };
+
+  console.log(background);
+
   return (
-    <CharacterOption
-      label="Background"
-      option={background}
-      setOption={setBackground}
-      options={backgrounds.map((b) => ({
-        label: b.name,
-        value: b.id,
-      }))}
-    >
+    <Stack>
+      <Select
+        searchable
+        value={background.id}
+        onChange={updateBackground}
+        data={backgrounds.map((b) => ({
+          label: b.name,
+          value: b.id,
+        }))}
+        label="Background"
+      />
       {background.id !== "" && (
         <BackgroundOptsLoader
           background={background}
           setBackground={setBackground}
         />
       )}
-    </CharacterOption>
+    </Stack>
   );
 }

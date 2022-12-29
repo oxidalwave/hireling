@@ -1,6 +1,6 @@
-import { Card } from "@mantine/core";
+import { Card, Title } from "@mantine/core";
 import axios from "axios";
-import { useRouter } from "next/router";
+import RichTextEditor from "components/RichTextEditor";
 
 export async function getServerSideProps(ctx) {
   const { id } = ctx.query;
@@ -16,7 +16,12 @@ export async function getServerSideProps(ctx) {
 }
 
 const PlayerCharacterPage = ({ playercharacter }) => {
-  return <Card>{JSON.stringify(playercharacter)}</Card>;
+  return (
+    <Card>
+      <Title>playercharacter.name</Title>
+      <RichTextEditor value={JSON.stringify(playercharacter)} />
+    </Card>
+  );
 };
 
 export default PlayerCharacterPage;

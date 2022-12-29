@@ -21,15 +21,17 @@ export default function PlayerClassOptsLoader({
     isLoading: playerClassIsLoading,
     error: playerClassError,
   } = useQuery({
-    queryKey: ["playerclasses", playerClass?.id || "0"],
+    queryKey: ["playerclasses", playerClass.id],
     queryFn: () =>
       axios
         .get(`http://localhost:3000/api/playerclasses/${playerClass.id}`)
         .then((r) => r.data),
     onSuccess: (d) => {
       console.log(d);
+      console.log(playerClass);
       const pc = { ...playerClass };
-      pc.boostId = "";
+      pc.boost = { id: '' };
+      pc.feat = { id: '' };
       setPlayerClass(pc);
     },
     onError: (e: Error) => {

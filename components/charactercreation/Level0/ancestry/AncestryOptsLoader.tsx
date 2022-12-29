@@ -1,26 +1,22 @@
-import {
-  Alert,
-  Loader,
-  LoadingOverlay,
-  ScrollArea,
-  Stack,
-  Text,
-} from "@mantine/core";
+import { Alert, Loader } from "@mantine/core";
 import { showNotification } from "@mantine/notifications";
 import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
+import { Dispatch } from "react";
 import { NewPlayerCharacterAncestry } from "types/PlayerCharacter";
 import AncestryOpts from "./AncestryOpts";
 
 interface AncestryOptsLoaderProps {
   ancestry: NewPlayerCharacterAncestry;
-  setAncestry;
+  setAncestry: Dispatch<NewPlayerCharacterAncestry>;
 }
 
 export default function AncestryOptsLoader({
   ancestry,
   setAncestry,
 }: AncestryOptsLoaderProps): JSX.Element {
+  console.log(ancestry);
+
   const { data, isLoading, error } = useQuery({
     queryKey: ["ancestries", ancestry.id],
     queryFn: async () =>
@@ -28,9 +24,9 @@ export default function AncestryOptsLoader({
         .get(`http://localhost:3000/api/ancestries/${ancestry.id}`)
         .then((r) => r.data),
     onSuccess: (d) => {
-      console.log(d)
+      console.log(d);
       const a = { ...ancestry };
-      a.boostIds = d.boosts.map((a) => '');
+      a.boosts = d.boosts.map(() => ({ id: "" }));
       setAncestry(a);
     },
     onError: (e: Error) => {
@@ -40,12 +36,7 @@ export default function AncestryOptsLoader({
   });
 
   if (isLoading) {
-    return (
-      <div style={{ position: "relative" }}>
-        <LoadingOverlay visible overlayBlur={2} />
-        <Text>TEST</Text>
-      </div>
-    );
+    return <Loader />;
   }
 
   if (error) {

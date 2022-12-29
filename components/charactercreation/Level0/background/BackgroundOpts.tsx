@@ -1,9 +1,4 @@
-import {
-  Alert,
-  ScrollArea,
-  Stack,
-  Text,
-} from "@mantine/core";
+import { Alert, ScrollArea, Stack, Text } from "@mantine/core";
 import RichTextEditor from "components/RichTextEditor";
 import { getSegmentedControlDataFromBoosts } from "lib/boosts/boostUtils";
 import { Dispatch } from "react";
@@ -22,8 +17,8 @@ export default function BackgroundOpts({ background, setBackground, data }) {
 
   const updateBoost = (i: number) => (ability: string) => {
     let b = { ...background };
-    let bs = b.boostIds;
-    bs[i] = ability;
+    let bs = b.boosts;
+    bs[i] = { id: ability };
     b.boosts = bs;
     setBackground(b);
   };
@@ -37,10 +32,10 @@ export default function BackgroundOpts({ background, setBackground, data }) {
           id="backgroundDescription"
         />
       </ScrollArea.Autosize>
-      {background.boostIds.length > 0 && (
+      {background.boosts.length > 0 && (
         <>
           <Text>Boosts</Text>
-          {background.boostIds.map((id: string, i: number) => (
+          {background.boosts.map(({ id }, i: number) => (
             <Boost
               key={`background-boost-${i}`}
               value={id}
@@ -49,7 +44,7 @@ export default function BackgroundOpts({ background, setBackground, data }) {
               isFlaw={!boosts[i].isBoost}
             />
           ))}
-          {background.boostIds.find((b: string) => b === "") && (
+          {background.boosts.find((b: string) => b === "") && (
             <Alert color="red">Please confirm all Boosts are selected.</Alert>
           )}
         </>
