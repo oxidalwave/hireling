@@ -1,4 +1,4 @@
-import { ScrollArea, Stack } from "@mantine/core";
+import { ScrollArea, Spoiler, Stack } from "@mantine/core";
 import RichTextEditor from "components/RichTextEditor";
 import { getSegmentedControlDataFromBoosts } from "lib/boosts/boostUtils";
 import { Dispatch } from "react";
@@ -35,13 +35,13 @@ export default function PlayerClassOpts({
 
   return (
     <Stack>
-      <ScrollArea.Autosize maxHeight={240}>
+      <Spoiler maxHeight={120} showLabel="Show more" hideLabel="Hide">
         <RichTextEditor
           value={description}
           readOnly
           id="playerClassDescription"
         />
-      </ScrollArea.Autosize>
+      </Spoiler>
       <Boost
         choices={boostOptions}
         value={playerClass.boost.id}

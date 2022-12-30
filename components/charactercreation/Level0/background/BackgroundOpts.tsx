@@ -1,4 +1,4 @@
-import { Alert, ScrollArea, Stack, Text } from "@mantine/core";
+import { Alert, ScrollArea, Spoiler, Stack, Text } from "@mantine/core";
 import RichTextEditor from "components/RichTextEditor";
 import { getSegmentedControlDataFromBoosts } from "lib/boosts/boostUtils";
 import { Dispatch } from "react";
@@ -25,13 +25,13 @@ export default function BackgroundOpts({ background, setBackground, data }) {
 
   return (
     <Stack>
-      <ScrollArea.Autosize maxHeight={240}>
+      <Spoiler maxHeight={120} showLabel="Show more" hideLabel="Hide">
         <RichTextEditor
           value={description}
           readOnly
           id="backgroundDescription"
         />
-      </ScrollArea.Autosize>
+      </Spoiler>
       {background.boosts.length > 0 && (
         <>
           <Text>Boosts</Text>

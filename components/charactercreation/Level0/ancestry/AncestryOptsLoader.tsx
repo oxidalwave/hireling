@@ -26,6 +26,7 @@ export default function AncestryOptsLoader({
     onSuccess: (d) => {
       console.log(d);
       const a = { ...ancestry };
+      a.feat = { id: "" };
       a.boosts = d.boosts.map(() => ({ id: "" }));
       setAncestry(a);
     },

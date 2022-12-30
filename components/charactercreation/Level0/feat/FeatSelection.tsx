@@ -14,7 +14,7 @@ export default function FeatSelection({ feat, setFeat, feats }) {
     <Stack>
       <Select
         searchable
-        label="Class Feat"
+        label={`Select A Feat`}
         value={feat}
         onChange={setFeat}
         data={feats}
@@ -24,7 +24,7 @@ export default function FeatSelection({ feat, setFeat, feats }) {
           <RichTextEditor
             value={featData.description}
             readOnly
-            id="classFeatDescription"
+            id={`featDescription-${feat.id}`}
           />
         </ScrollArea.Autosize>
       )}

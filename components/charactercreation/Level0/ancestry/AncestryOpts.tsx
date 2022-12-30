@@ -1,14 +1,19 @@
-import { Alert, ScrollArea, Stack, Text } from "@mantine/core";
+import { Alert, ScrollArea, Select, Spoiler, Stack, Text } from "@mantine/core";
 import RichTextEditor from "components/RichTextEditor";
 import { getSegmentedControlDataFromBoosts } from "lib/boosts/boostUtils";
 import { Dispatch } from "react";
 import { NewPlayerCharacterAncestry } from "types/PlayerCharacter";
 import Boost from "../Boost";
+import FeatSelection from "../feat/FeatSelection";
 
 interface AncestryOptsProps {
   ancestry: NewPlayerCharacterAncestry;
   setAncestry: Dispatch<NewPlayerCharacterAncestry>;
-  data: { description: string; boosts };
+  data: {
+    description: string;
+    boosts;
+    feats: { feat: { id: string; name: string } }[];
+  };
 }
 
 export default function AncestryOpts({
@@ -17,7 +22,7 @@ export default function AncestryOpts({
   data,
 }: AncestryOptsProps) {
   console.log(ancestry);
-  const { description, boosts } = data;
+  const { description, boosts, feats } = data;
   const boostsData = getSegmentedControlDataFromBoosts(boosts);
 
   const updateBoost = (i: number) => (abilityId: string) => {
@@ -28,11 +33,22 @@ export default function AncestryOpts({
     setAncestry(a);
   };
 
+  const updateFeat = (f) => {
+    let a = { ...ancestry };
+    a.feat = { id: f };
+    setAncestry(a);
+  };
+
   return (
     <Stack>
-      <ScrollArea.Autosize maxHeight={240}>
+      <Spoiler maxHeight={120} showLabel="Show more" hideLabel="Hide">
         <RichTextEditor value={description} readOnly id="ancestryDescription" />
-      </ScrollArea.Autosize>
+      </Spoiler>
+      <FeatSelection
+        feat={ancestry.feat.id}
+        setFeat={updateFeat}
+        feats={feats.map(({ feat }) => ({ value: feat.id, label: feat.name }))}
+      />
       {ancestry.boosts.length > 0 && (
         <>
           <Text>Boosts</Text>

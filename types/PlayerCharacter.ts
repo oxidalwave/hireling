@@ -5,6 +5,7 @@ export type ResourceById = {
 export type NewPlayerCharacterFreeBoost = ResourceById;
 
 export type NewPlayerCharacterAncestry = ResourceById & {
+  feat: ResourceById;
   boosts: ResourceById[];
 };
 

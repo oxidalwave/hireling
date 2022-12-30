@@ -1,4 +1,4 @@
-import { TextInput, Stack, Button, Alert } from "@mantine/core";
+import { TextInput, Stack, Button, Alert, Divider } from "@mantine/core";
 import { useState } from "react";
 import { useSession } from "next-auth/react";
 import PlayerClass from "./Level0/playerclass/PlayerClass";
@@ -21,6 +21,7 @@ const Level0 = ({ ancestries, backgrounds, playerClasses }) => {
   const [ancestry, setAncestry] = useState<NewPlayerCharacterAncestry>({
     id: "",
     boosts: [],
+    feat: { id: "" },
   });
   const [background, setBackground] = useState<NewPlayerCharacterBackground>({
     id: "",
@@ -47,11 +48,11 @@ const Level0 = ({ ancestries, backgrounds, playerClasses }) => {
 
   const payload = {
     name,
-    ancestry: {id: ancestry.id},
-    background: {id: background.id},
-    playerClass: {id: playerClass.id},
+    ancestry: { id: ancestry.id },
+    background: { id: background.id },
+    playerClass: { id: playerClass.id },
     boosts,
-    feats: [playerClass.feat]
+    feats: [playerClass.feat],
   };
 
   const logCharacter = () => console.log(payload);
@@ -83,16 +84,19 @@ const Level0 = ({ ancestries, backgrounds, playerClasses }) => {
         value={name}
         onChange={(e) => setName(e.currentTarget.value)}
       />
+      <Divider />
       <Ancestry
         ancestry={ancestry}
         setAncestry={setAncestry}
         ancestries={ancestries}
       />
+      <Divider />
       <Background
         background={background}
         setBackground={setBackground}
         backgrounds={backgrounds}
       />
+      <Divider />
       <PlayerClass
         playerClass={playerClass}
         setPlayerClass={setPlayerClass}
@@ -101,7 +105,9 @@ const Level0 = ({ ancestries, backgrounds, playerClasses }) => {
           value: pc.id,
         }))}
       />
+      <Divider />
       <FreeBoosts boosts={freeBoosts} setBoosts={setFreeBoosts} />
+      <Divider />
       <AbilityScores boosts={boosts} />
       {shouldValidate && !isValid ? (
         <Alert color="red">There is an unselected input.</Alert>

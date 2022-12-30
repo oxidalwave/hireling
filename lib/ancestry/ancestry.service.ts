@@ -46,6 +46,11 @@ export async function getAncestryById(id: string) {
       size: true,
       speed: true,
       source: true,
+      feats: {
+        select: {
+          feat: { select: { id: true, name: true } },
+        },
+      },
       boosts: {
         select: {
           id: true,

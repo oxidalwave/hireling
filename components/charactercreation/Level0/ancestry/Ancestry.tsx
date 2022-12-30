@@ -18,6 +18,7 @@ export default function Ancestry({
     setAncestry({
       id,
       boosts: [],
+      feat: { id: "" },
     });
   };
 
