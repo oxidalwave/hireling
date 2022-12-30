@@ -35,10 +35,33 @@ export async function getAncestries(where = {}) {
   });
 }
 
-export async function getAncestryById(id: string): Promise<Ancestry | null> {
+export async function getAncestryById(id: string) {
   return await prisma.ancestry.findUnique({
     where: { id },
-    include: { source: true, boosts: true },
+    select: {
+      id: true,
+      name: true,
+      description: true,
+      hp: true,
+      size: true,
+      speed: true,
+      source: true,
+      boosts: {
+        select: {
+          id: true,
+          kind: true,
+          isBoost: true,
+          abilityScores: {
+            select: {
+              id: true,
+              abilityScore: {
+                select: { id: true, name: true, abbreviatedName: true },
+              },
+            },
+          },
+        },
+      },
+    },
   });
 }
 

@@ -47,6 +47,48 @@ async function main() {
     });
   }
 
+  for (let i = 0; i < 16; i++) {
+    await prisma.boost.create({
+      data: {
+        kind: "FREE",
+        abilityScores: {
+          create: [
+            {
+              abilityScore: {
+                connect: { abbreviatedName: "str" },
+              },
+            },
+            {
+              abilityScore: {
+                connect: { abbreviatedName: "dex" },
+              },
+            },
+            {
+              abilityScore: {
+                connect: { abbreviatedName: "con" },
+              },
+            },
+            {
+              abilityScore: {
+                connect: { abbreviatedName: "int" },
+              },
+            },
+            {
+              abilityScore: {
+                connect: { abbreviatedName: "wis" },
+              },
+            },
+            {
+              abilityScore: {
+                connect: { abbreviatedName: "cha" },
+              },
+            },
+          ],
+        },
+      },
+    });
+  }
+
   const skills = [
     {
       name: "Acrobatics",
@@ -274,54 +316,6 @@ async function main() {
     })
     .then((r) => r.data);
   for (const ancestry of ancestries.results) {
-    let boosts: {
-      isBoost;
-      kind;
-      strength;
-      dexterity;
-      constitution;
-      intelligence;
-      wisdom;
-      charisma;
-    }[] = [];
-    let apiBoosts = ancestry.system.boosts;
-    for (const apiBoostKey of Object.keys(ancestry?.system?.boosts ?? {})) {
-      const apiBoost = apiBoosts[apiBoostKey].value;
-      if (apiBoost.length > 0) {
-        boosts = [
-          ...boosts,
-          {
-            isBoost: true,
-            kind: "ANCESTRY",
-            strength: apiBoost.includes("str"),
-            dexterity: apiBoost.includes("dex"),
-            constitution: apiBoost.includes("con"),
-            intelligence: apiBoost.includes("int"),
-            wisdom: apiBoost.includes("wis"),
-            charisma: apiBoost.includes("cha"),
-          },
-        ];
-      }
-    }
-    let apiFlaws = ancestry.system.flaws;
-    for (const apiFlawKey of Object.keys(ancestry?.system?.flaws ?? {})) {
-      const apiFlaw = apiFlaws[apiFlawKey].value;
-      if (apiFlaw.length > 0) {
-        boosts = [
-          ...boosts,
-          {
-            isBoost: false,
-            kind: "ANCESTRY",
-            strength: apiFlaw.includes("str"),
-            dexterity: apiFlaw.includes("dex"),
-            constitution: apiFlaw.includes("con"),
-            intelligence: apiFlaw.includes("int"),
-            wisdom: apiFlaw.includes("wis"),
-            charisma: apiFlaw.includes("cha"),
-          },
-        ];
-      }
-    }
     const feats = await axios
       .get(
         `https://api.pathfinder2.fr/v1/pf2/feat?system.featType.value=ancestry&system.traits.value=${ancestry.name}`,
@@ -330,8 +324,15 @@ async function main() {
         }
       )
       .then((r) => r.data);
-
-    const a = await prisma.ancestry.create({
+    const apiBoosts: { value: string[] }[] = ancestry?.system?.boosts ?? [];
+    const boosts: string[][] = Object.values(apiBoosts).map(
+      (boost: { value: string[] }) => boost.value
+    );
+    const apiFlaws: { value: string[] }[] = ancestry?.system?.flaws ?? [];
+    const flaws: string[][] = Object.values(apiFlaws).map(
+      (flaw: { value: string[] }) => flaw.value
+    );
+    await prisma.ancestry.create({
       data: {
         name: ancestry.name,
         description: ancestry.system.description.value,
@@ -339,7 +340,30 @@ async function main() {
         speed: ancestry.system.speed,
         size: ancestry.system.size,
         boosts: {
-          create: boosts,
+          create: [
+            ...boosts.map((abilityScores: string[]) => ({
+              isBoost: true,
+              kind: "ANCESTRY",
+              abilityScores: {
+                create: abilityScores.map((abilityScore: string) => ({
+                  abilityScore: {
+                    connect: { abbreviatedName: abilityScore },
+                  },
+                })),
+              },
+            })),
+            ...flaws.map((abilityScores: string[]) => ({
+              isBoost: false,
+              kind: "ANCESTRY",
+              abilityScores: {
+                create: abilityScores.map((abilityScore: string) => ({
+                  abilityScore: {
+                    connect: { abbreviatedName: abilityScore },
+                  },
+                })),
+              },
+            })),
+          ],
         },
         feats: {
           create: await Promise.all(
@@ -377,61 +401,43 @@ async function main() {
     })
     .then((r) => r.data);
   for (const background of backgrounds.results) {
-    let boosts: {
-      isBoost;
-      kind;
-      strength;
-      dexterity;
-      constitution;
-      intelligence;
-      wisdom;
-      charisma;
-    }[] = [];
-    let apiBoosts = background.system.boosts;
-    for (const apiBoostKey of Object.keys(background?.system?.boosts ?? {})) {
-      const apiBoost = apiBoosts[apiBoostKey].value;
-      if (apiBoost.length > 0) {
-        boosts = [
-          ...boosts,
-          {
-            isBoost: true,
-            kind: "BACKGROUND",
-            strength: apiBoost.includes("str"),
-            dexterity: apiBoost.includes("dex"),
-            constitution: apiBoost.includes("con"),
-            intelligence: apiBoost.includes("int"),
-            wisdom: apiBoost.includes("wis"),
-            charisma: apiBoost.includes("cha"),
-          },
-        ];
-      }
-    }
-    let apiFlaws = background.system.flaws;
-    for (const apiFlawKey of Object.keys(background?.system?.flaws ?? {})) {
-      const apiFlaw = apiFlaws[apiFlawKey].value;
-      if (apiFlaw.length > 0) {
-        boosts = [
-          ...boosts,
-          {
-            isBoost: false,
-            kind: "BACKGROUND",
-            strength: apiFlaw.includes("str"),
-            dexterity: apiFlaw.includes("dex"),
-            constitution: apiFlaw.includes("con"),
-            intelligence: apiFlaw.includes("int"),
-            wisdom: apiFlaw.includes("wis"),
-            charisma: apiFlaw.includes("cha"),
-          },
-        ];
-      }
-    }
-
+    const apiBoosts: { value: string[] }[] = background?.system?.boosts ?? [];
+    const boosts: string[][] = Object.values(apiBoosts).map(
+      (boost: { value: string[] }) => boost.value
+    );
+    const apiFlaws: { value: string[] }[] = background?.system?.flaws ?? [];
+    const flaws: string[][] = Object.values(apiFlaws).map(
+      (flaw: { value: string[] }) => flaw.value
+    );
     const b = await prisma.background.create({
       data: {
         name: background.name,
         description: background.system.description.value,
         boosts: {
-          create: boosts,
+          create: [
+            ...boosts.map((abilityScores: string[]) => ({
+              isBoost: true,
+              kind: "BACKGROUND",
+              abilityScores: {
+                create: abilityScores.map((abilityScore: string) => ({
+                  abilityScore: {
+                    connect: { abbreviatedName: abilityScore },
+                  },
+                })),
+              },
+            })),
+            ...flaws.map((abilityScores: string[]) => ({
+              isBoost: false,
+              kind: "BACKGROUND",
+              abilityScores: {
+                create: abilityScores.map((abilityScore: string) => ({
+                  abilityScore: {
+                    connect: { abbreviatedName: abilityScore },
+                  },
+                })),
+              },
+            })),
+          ],
         },
         source: {
           connectOrCreate: {
@@ -449,17 +455,7 @@ async function main() {
     })
     .then((r) => r.data);
   for (const playerClass of playerClasses.results) {
-    let apiBoost = playerClass.system.keyAbility.value;
-    const boost = {
-      isBoost: true,
-      kind: "PLAYERCLASS",
-      strength: apiBoost.includes("str"),
-      dexterity: apiBoost.includes("dex"),
-      constitution: apiBoost.includes("con"),
-      intelligence: apiBoost.includes("int"),
-      wisdom: apiBoost.includes("wis"),
-      charisma: apiBoost.includes("cha"),
-    };
+    let keyAbilities: string[] = playerClass.system.keyAbility.value;
     const feats = await axios
       .get(
         `https://api.pathfinder2.fr/v1/pf2/feat?system.featType.value=class&system.traits.value=${playerClass.name}`,
@@ -473,7 +469,6 @@ async function main() {
       data: {
         name: playerClass.name,
         description: playerClass.system.description.value,
-        boost: { create: boost },
         feats: {
           create: await Promise.all(
             feats.results.map(async (feat) => ({
@@ -493,6 +488,19 @@ async function main() {
               },
             }))
           ),
+        },
+        boost: {
+          create: {
+            isBoost: true,
+            kind: "PLAYER_CLASS",
+            abilityScores: {
+              create: keyAbilities.map((keyAbility) => ({
+                abilityScore: {
+                  connect: { abbreviatedName: keyAbility },
+                },
+              })),
+            },
+          },
         },
         source: {
           connectOrCreate: {

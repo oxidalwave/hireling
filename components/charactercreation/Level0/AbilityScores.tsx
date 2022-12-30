@@ -1,12 +1,15 @@
 import {
+  Alert,
   Card,
-  Flex,
-  Grid,
-  Group,
+  LoadingOverlay,
   NumberInput,
   SimpleGrid,
   Text,
 } from "@mantine/core";
+import { useQueries } from "@tanstack/react-query";
+import axios from "axios";
+import { relative } from "path";
+import { ResourceById } from "types/PlayerCharacter";
 
 type AbilityScoresArray = {
   str: number;
@@ -18,16 +21,59 @@ type AbilityScoresArray = {
 };
 
 type AbilityScoresProps = {
-  boosts;
-  flaws;
+  boosts: ResourceById[];
 };
 
-const AbilityScores = ({ boosts, flaws }: AbilityScoresProps) => {
-  const getModsFor = (abilityScore: string) => {
-    const boostCount = boosts.filter((b) => b === abilityScore).length;
-    const flawCount = flaws.filter((f) => f === abilityScore).length;
-    return 10 + boostCount * 2 - flawCount * 2;
-  };
+const AbilityScores = ({ boosts }: AbilityScoresProps) => {
+  console.log(boosts);
+
+  const results = useQueries({
+    queries: boosts
+      .filter(({ id }) => id !== "")
+      .map(({ id }) => ({
+        queryFn: () =>
+          axios
+            .get(`http://localhost:3000/api/abilityscoreboosts/${id}`)
+            .then((r) => r.data),
+        queryKey: ["boost", id],
+      })),
+  });
+
+  if (results.find((r) => r.isLoading)) {
+    return (
+      <Card>
+        <Text>Ability Scores</Text>
+        <div style={{ position: "relative" }}>
+          <LoadingOverlay visible={true} />
+          <SimpleGrid cols={6}>
+            <NumberInput readOnly label="Strength" value={0} />
+            <NumberInput readOnly label="Dexterity" value={0} />
+            <NumberInput readOnly label="Constitution" value={0} />
+            <NumberInput readOnly label="Intelligence" value={0} />
+            <NumberInput readOnly label="Wisdom" value={0} />
+            <NumberInput readOnly label="Charisma" value={0} />
+          </SimpleGrid>
+        </div>
+      </Card>
+    );
+  }
+
+  if (results.find((r) => r.error)) {
+    return <Alert color="red">Could not obtain ability score</Alert>;
+  }
+
+  const getModsFor: (abilityScoreAbbreviation: string) => number = (
+    abilityScoreAbbreviation: string
+  ) =>
+    results.reduce(
+      (p, c) =>
+        c?.data?.abilityScore?.abbreviatedName === abilityScoreAbbreviation
+          ? c?.data?.boost?.isBoost
+            ? p + 2
+            : p - 2
+          : p,
+      10
+    );
 
   return (
     <Card>

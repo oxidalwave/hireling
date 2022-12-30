@@ -4,8 +4,21 @@ export async function getPlayerCharacters() {
   return await prisma.playerCharacter.findMany();
 }
 
-export async function getPlayerCharacter(id) {
-  return await prisma.playerCharacter.findUnique({ where: { id } });
+export async function getPlayerCharacterById(id) {
+  return await prisma.playerCharacter.findUnique({
+    where: { id },
+    select: {
+      name: true,
+      ancestry: true,
+      background: true,
+      abilityScoreBoosts: true,
+      feats: {
+        select: {
+          feat: true
+        }
+      },
+    },
+  });
 }
 
 export async function getUserPlayerCharacters(email) {
@@ -26,11 +39,12 @@ export async function createPlayerCharacter(email, body) {
       ancestry: { connect: { id: body.ancestry.id } },
       background: { connect: { id: body.background.id } },
       playerClass: { connect: { id: body.playerClass.id } },
-      abilityScores: {
-        create: ["str", "dex", "con", "int", "wis", "cha"].map((as) => ({
-          score: body.abilityScores[as],
-          abilityScore: {
-            connect: { abbreviatedName: as },
+      abilityScoreBoosts: {
+        create: body.boosts.map((b) => ({
+          abilityScoreBoost: {
+            connect: {
+              id: b.id,
+            },
           },
         })),
       },

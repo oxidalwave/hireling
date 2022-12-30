@@ -1,15 +1,7 @@
-import {
-  TextInput,
-  Stack,
-  Button,
-  SegmentedControl,
-  Alert,
-} from "@mantine/core";
+import { TextInput, Stack, Button, Alert } from "@mantine/core";
 import { useState } from "react";
-import Ancestry from "components/charactercreation/Level0/Ancestry";
 import { useSession } from "next-auth/react";
-import Background from "./Level0/Background";
-import PlayerClass from "./Level0/PlayerClass";
+import PlayerClass from "./Level0/playerclass/PlayerClass";
 import AbilityScores from "./Level0/AbilityScores";
 import axios from "axios";
 import { showNotification } from "@mantine/notifications";
@@ -18,64 +10,51 @@ import {
   NewPlayerCharacterBackground,
   NewPlayerCharacterFreeBoost,
   NewPlayerCharacterPlayerClass,
+  ResourceById,
 } from "types/PlayerCharacter";
+import FreeBoosts from "./Level0/FreeBoosts";
+import Ancestry from "./Level0/ancestry/Ancestry";
+import Background from "./Level0/background/Background";
 
 const Level0 = ({ ancestries, backgrounds, playerClasses }) => {
-  const { data: session } = useSession();
-
-  const [name, setName] = useState("");
+  const [name, setName] = useState<string>("");
   const [ancestry, setAncestry] = useState<NewPlayerCharacterAncestry>({
     id: "",
+    boosts: [],
   });
   const [background, setBackground] = useState<NewPlayerCharacterBackground>({
     id: "",
+    boosts: [],
   });
   const [playerClass, setPlayerClass] = useState<NewPlayerCharacterPlayerClass>(
-    { id: "", feat: "", boost: "" }
+    { id: "", feat: { id: "" }, boost: { id: "" } }
   );
 
   const [freeBoosts, setFreeBoosts] = useState<NewPlayerCharacterFreeBoost[]>([
-    "",
-    "",
-    "",
-    "",
+    { id: "" },
+    { id: "" },
+    { id: "" },
+    { id: "" },
   ]);
 
-  const updateBoost = (i, a) => {
-    let b = [...freeBoosts];
-    b[i] = a;
-    setFreeBoosts(b);
-  };
-
-  const boosts = [
-    ...(ancestry.boosts ?? []),
-    ...(background.boosts ?? []),
-    playerClass.boost,
+  console.log(ancestry.boosts);
+  const boosts: ResourceById[] = [
+    ...ancestry.boosts,
+    ...background.boosts,
     ...freeBoosts,
+    playerClass.boost ?? { id: "" },
   ];
-  const flaws = [...(ancestry.flaws ?? []), ...(background.flaws ?? [])];
-
-  const getScoreFor = (abilityScore: string) => {
-    const boostCount = boosts.filter((b) => b === abilityScore).length;
-    const flawCount = flaws.filter((f) => f === abilityScore).length;
-    return 10 + boostCount * 2 - flawCount * 2;
-  };
 
   const payload = {
     name,
-    ancestry: { id: ancestry.id },
-    background: { id: background.id },
-    playerClass: { id: playerClass.id },
-    abilityScores: {
-      str: getScoreFor("str"),
-      dex: getScoreFor("dex"),
-      con: getScoreFor("con"),
-      int: getScoreFor("int"),
-      wis: getScoreFor("wis"),
-      cha: getScoreFor("cha"),
-    },
-    feats: [{ id: playerClass.feat }],
+    ancestry: {id: ancestry.id},
+    background: {id: background.id},
+    playerClass: {id: playerClass.id},
+    boosts,
+    feats: [playerClass.feat]
   };
+
+  const logCharacter = () => console.log(payload);
 
   const createCharacter = async () => {
     try {
@@ -87,13 +66,15 @@ const Level0 = ({ ancestries, backgrounds, playerClasses }) => {
     }
   };
 
+  const shouldValidate = true;
   const isValid =
     name &&
-    ancestry &&
-    background &&
-    playerClass &&
-    !boosts.includes("") &&
-    !flaws.includes("");
+    ancestry.id &&
+    background.id &&
+    playerClass.id &&
+    !boosts.find(({ id }) => id === "");
+
+  console.log(ancestry);
 
   return (
     <Stack>
@@ -105,18 +86,12 @@ const Level0 = ({ ancestries, backgrounds, playerClasses }) => {
       <Ancestry
         ancestry={ancestry}
         setAncestry={setAncestry}
-        ancestries={ancestries.map((a) => ({
-          label: a.name,
-          value: a.id,
-        }))}
+        ancestries={ancestries}
       />
       <Background
         background={background}
         setBackground={setBackground}
-        backgrounds={backgrounds.map((b) => ({
-          label: b.name,
-          value: b.id,
-        }))}
+        backgrounds={backgrounds}
       />
       <PlayerClass
         playerClass={playerClass}
@@ -126,27 +101,12 @@ const Level0 = ({ ancestries, backgrounds, playerClasses }) => {
           value: pc.id,
         }))}
       />
-      {freeBoosts.map((b, i) => (
-        <SegmentedControl
-          color={b ? "blue" : "dark"}
-          key={`free-boost-${i}`}
-          value={b}
-          onChange={(a) => updateBoost(i, a)}
-          data={[
-            { label: "Strength", value: "str" },
-            { label: "Dexterity", value: "dex" },
-            { label: "Constitution", value: "con" },
-            { label: "Intelligence", value: "int" },
-            { label: "Wisdom", value: "wis" },
-            { label: "Charisma", value: "cha" },
-          ]}
-        />
-      ))}
-      <AbilityScores boosts={boosts} flaws={flaws} />
-      {isValid ? (
-        <Button onClick={createCharacter}>SUBMIT</Button>
-      ) : (
+      <FreeBoosts boosts={freeBoosts} setBoosts={setFreeBoosts} />
+      <AbilityScores boosts={boosts} />
+      {shouldValidate && !isValid ? (
         <Alert color="red">There is an unselected input.</Alert>
+      ) : (
+        <Button onClick={createCharacter}>SUBMIT</Button>
       )}
     </Stack>
   );
