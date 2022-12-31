@@ -4,11 +4,11 @@ import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
 import FeatData from "./FeatData";
 
-interface FeatDataLoader {
+interface FeatDataByIdProps {
   id: string;
 }
 
-function FeatDataLoaderHandler({ id }: FeatDataLoader) {
+function FeatDataByIdLoader({ id }: FeatDataByIdProps) {
   console.log(id);
 
   const { data, error, isLoading } = useQuery({
@@ -33,13 +33,13 @@ function FeatDataLoaderHandler({ id }: FeatDataLoader) {
   }
 
   const { description } = data;
-  return <FeatData id={id} description={description} />;
+  return <FeatData description={description} />;
 }
 
-export default function FeatDataLoader({ id }: FeatDataLoader) {
+export default function FeatDataById({ id }: FeatDataByIdProps) {
   if (id === "") {
     return <></>;
   } else {
-    return <FeatDataLoaderHandler id={id} />;
+    return <FeatDataByIdLoader id={id} />;
   }
 }
