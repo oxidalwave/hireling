@@ -17,12 +17,7 @@ export default function BackgroundOptsLoader({ background, setBackground }) {
       a.boosts = d.boosts.map(() => ({ id: "" }));
       setBackground(a);
     },
-    onError: (e: Error) => {
-      showNotification({
-        title: "Could not load Background",
-        message: e.toString(),
-      });
-    },
+    onError: showNotification,
     refetchOnWindowFocus: false,
   });
 
@@ -31,7 +26,6 @@ export default function BackgroundOptsLoader({ background, setBackground }) {
   }
 
   if (error) {
-    showNotification(error);
     return (
       <Alert color="red">
         Could not load the Ancestry. Please check your notifications.
