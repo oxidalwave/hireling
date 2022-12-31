@@ -2,6 +2,7 @@ import { Alert, Loader } from "@mantine/core";
 import { showNotification } from "@mantine/notifications";
 import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
+import { useAncestry } from "lib/ancestry/ancestries.hooks";
 import { Dispatch } from "react";
 import { NewPlayerCharacterAncestry } from "types/PlayerCharacter";
 import AncestryOpts from "./AncestryOpts";
@@ -17,23 +18,12 @@ export default function AncestryOptsLoader({
 }: AncestryOptsLoaderProps): JSX.Element {
   console.log(ancestry);
 
-  const { data, isLoading, error } = useQuery({
-    queryKey: ["ancestries", ancestry.id],
-    queryFn: async () =>
-      await axios
-        .get(`http://localhost:3000/api/ancestries/${ancestry.id}`)
-        .then((r) => r.data),
-    onSuccess: (d) => {
-      console.log(d);
-      const a = { ...ancestry };
-      a.feat = { id: "" };
-      a.boosts = d.boosts.map(() => ({ id: "" }));
-      setAncestry(a);
-    },
-    onError: (e: Error) => {
-      showNotification(e);
-    },
-    refetchOnWindowFocus: false,
+  const { data, isLoading, error } = useAncestry(ancestry.id, (d) => {
+    console.log(d);
+    const a = { ...ancestry };
+    a.feat = { id: "" };
+    a.boosts = d.boosts.map(() => ({ id: "" }));
+    setAncestry(a);
   });
 
   if (isLoading) {
@@ -41,7 +31,6 @@ export default function AncestryOptsLoader({
   }
 
   if (error) {
-    showNotification(error);
     return (
       <Alert color="red">
         Could not load the Ancestry. Please check your notifications.

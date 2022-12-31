@@ -3,7 +3,8 @@ import {
   deleteAncestry,
   getAncestryById,
   updateAncestry,
-} from "lib/ancestry/ancestry.service";
+} from "lib/ancestry/ancestries.service";
+import { GetAncestryByIdResponse } from "lib/ancestry/ancestries.types";
 import { NextApiRequest, NextApiResponse } from "next";
 
 export default async function handler(
@@ -36,13 +37,20 @@ async function handleDelete(req: NextApiRequest, res: NextApiResponse) {
   }
 }
 
-async function handleGet(req: NextApiRequest, res: NextApiResponse) {
+async function handleGet(
+  req: NextApiRequest,
+  res: NextApiResponse<GetAncestryByIdResponse | { error: string }>
+) {
   const id: string | string[] | undefined = req.query.id;
   if (typeof id !== "string") {
     res.status(400).json({ error: `Bad ID: ${id}` });
   } else {
     const ancestry = await getAncestryById(id);
-    res.status(200).json(ancestry);
+    if (ancestry) {
+      res.status(200).json(ancestry);
+    } else {
+      res.status(404).json({ error: "Ancestry not found" });
+    }
   }
 }
 

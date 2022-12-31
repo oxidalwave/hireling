@@ -14,15 +14,13 @@ export default function Ancestry({
   setAncestry,
   ancestries,
 }: AncestryProps) {
-  const updateAncestry = (id) => {
+  const updateAncestry = (id: string) => {
     setAncestry({
       id,
       boosts: [],
       feat: { id: "" },
     });
   };
-
-  console.log(ancestry);
 
   return (
     <Stack>

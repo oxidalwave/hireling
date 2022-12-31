@@ -1,25 +1,9 @@
 import { Alert, Loader } from "@mantine/core";
-import { showNotification } from "@mantine/notifications";
-import { useQuery } from "@tanstack/react-query";
-import axios from "axios";
+import { useBackground } from "lib/backgrounds/backgrounds.hooks";
 import BackgroundOpts from "./BackgroundOpts";
 
 export default function BackgroundOptsLoader({ background, setBackground }) {
-  const { data, isLoading, error } = useQuery({
-    queryKey: ["backgrounds", background.id],
-    queryFn: () =>
-      axios
-        .get(`http://localhost:3000/api/backgrounds/${background.id}`)
-        .then((r) => r.data),
-    onSuccess: (d) => {
-      const a = { ...background };
-      console.log(d);
-      a.boosts = d.boosts.map(() => ({ id: "" }));
-      setBackground(a);
-    },
-    onError: showNotification,
-    refetchOnWindowFocus: false,
-  });
+  const { data, isLoading, error } = useBackground(background.id);
 
   if (isLoading) {
     return <Loader />;
@@ -34,7 +18,6 @@ export default function BackgroundOptsLoader({ background, setBackground }) {
   }
 
   if (data) {
-    console.log(background);
     return (
       <BackgroundOpts
         background={background}

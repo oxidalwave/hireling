@@ -1,5 +1,6 @@
 import { Ancestry, Prisma } from "@prisma/client";
 import prisma from "lib/prisma";
+import { GetAncestryByIdResponse } from "./ancestries.types";
 
 function createAncestryAndSource(
   ancestry: Omit<Ancestry, "id">,
@@ -35,7 +36,9 @@ export async function getAncestries(where = {}) {
   });
 }
 
-export async function getAncestryById(id: string) {
+export async function getAncestryById(
+  id: string
+): Promise<GetAncestryByIdResponse | null> {
   return await prisma.ancestry.findUnique({
     where: { id },
     select: {
@@ -45,7 +48,12 @@ export async function getAncestryById(id: string) {
       hp: true,
       size: true,
       speed: true,
-      source: true,
+      source: {
+        select: {
+          id: true,
+          name: true,
+        },
+      },
       feats: {
         select: {
           feat: { select: { id: true, name: true } },
@@ -54,7 +62,6 @@ export async function getAncestryById(id: string) {
       boosts: {
         select: {
           id: true,
-          kind: true,
           isBoost: true,
           abilityScores: {
             select: {

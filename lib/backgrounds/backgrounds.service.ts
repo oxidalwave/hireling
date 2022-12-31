@@ -1,5 +1,7 @@
-import { Background, Prisma, Source } from "@prisma/client";
+import { Background, Prisma } from "@prisma/client";
+import { GetBackgroundsResponse } from "lib/backgrounds/backgrounds.types";
 import prisma from "lib/prisma";
+import { GetBackgroundByIdResponse } from "./backgrounds.types";
 
 function createBackgroundAndSource(
   ancestry: Omit<Background, "id">,
@@ -21,31 +23,38 @@ export async function getBackgroundCount(): Promise<number> {
   return await prisma.background.count();
 }
 
-export async function getBackgrounds(where = {}) {
+export async function getBackgrounds(
+  where = {}
+): Promise<GetBackgroundsResponse> {
   return await prisma.background.findMany({
-    select: { name: true, id: true, source: true },
+    select: {
+      id: true,
+      name: true,
+      source: { select: { id: true, name: true } },
+    },
     where,
   });
 }
 
-export async function getBackground(id) {
+export async function getBackground(
+  id: string
+): Promise<GetBackgroundByIdResponse | null> {
   return await prisma.background.findUnique({
     where: { id },
     select: {
       id: true,
       name: true,
       description: true,
-      source: true,
+      source: { select: { id: true, name: true } },
       boosts: {
         select: {
           id: true,
-          kind: true,
           isBoost: true,
           abilityScores: {
             select: {
               id: true,
               abilityScore: {
-                select: { id: true, name: true, abbreviatedName: true },
+                select: { id: true, name: true },
               },
             },
           },

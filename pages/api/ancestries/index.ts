@@ -1,5 +1,5 @@
 import { Ancestry } from "@prisma/client";
-import { createAncestry, getAncestries } from "lib/ancestry/ancestry.service";
+import { createAncestry, getAncestries } from "lib/ancestry/ancestries.service";
 import { NextApiRequest, NextApiResponse } from "next";
 
 export default async function handler(
