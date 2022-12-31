@@ -1,4 +1,4 @@
-import { Select, Stack } from "@mantine/core";
+import { Select, SelectItem, Stack } from "@mantine/core";
 import { Dispatch } from "react";
 import { NewPlayerCharacterPlayerClass } from "types/PlayerCharacter";
 import PlayerClassOptsLoader from "./PlayerClassOptsLoader";
@@ -6,7 +6,7 @@ import PlayerClassOptsLoader from "./PlayerClassOptsLoader";
 export interface PlayerClassProps {
   playerClass: NewPlayerCharacterPlayerClass;
   setPlayerClass: Dispatch<NewPlayerCharacterPlayerClass>;
-  playerClasses: { label: string; value: string }[];
+  playerClasses: SelectItem[];
 }
 
 export default function PlayerClass({

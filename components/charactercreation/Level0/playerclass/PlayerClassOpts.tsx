@@ -1,10 +1,9 @@
-import { ScrollArea, Spoiler, Stack } from "@mantine/core";
+import { Spoiler, Stack } from "@mantine/core";
 import RichTextEditor from "components/RichTextEditor";
-import { getSegmentedControlDataFromBoosts } from "lib/boosts/boostUtils";
 import { Dispatch } from "react";
 import { NewPlayerCharacterPlayerClass } from "types/PlayerCharacter";
 import Boost from "../Boost";
-import FeatSelection from "../feat/FeatSelection";
+import FeatSelection from "components/charactercreation/feat/FeatSelection";
 
 export interface PlayerClassOptsProps {
   playerClass: NewPlayerCharacterPlayerClass;
@@ -48,7 +47,7 @@ export default function PlayerClassOpts({
         onChange={updateBoost}
       />
       <FeatSelection
-        feat={playerClass.feat.id}
+        feat={playerClass.feat}
         setFeat={updateFeat}
         feats={featOptions}
       />

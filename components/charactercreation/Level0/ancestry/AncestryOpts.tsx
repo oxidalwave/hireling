@@ -4,7 +4,7 @@ import { getSegmentedControlDataFromBoosts } from "lib/boosts/boostUtils";
 import { Dispatch } from "react";
 import { NewPlayerCharacterAncestry } from "types/PlayerCharacter";
 import Boost from "../Boost";
-import FeatSelection from "../feat/FeatSelection";
+import FeatSelection from "components/charactercreation/feat/FeatSelection";
 
 interface AncestryOptsProps {
   ancestry: NewPlayerCharacterAncestry;
@@ -45,7 +45,7 @@ export default function AncestryOpts({
         <RichTextEditor value={description} readOnly id="ancestryDescription" />
       </Spoiler>
       <FeatSelection
-        feat={ancestry.feat.id}
+        feat={ancestry.feat}
         setFeat={updateFeat}
         feats={feats.map(({ feat }) => ({ value: feat.id, label: feat.name }))}
       />
