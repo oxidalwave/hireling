@@ -15,7 +15,7 @@ export default function PlayerClass({
   playerClasses,
 }) {
   const updatePlayerClass = (pc) => {
-    setPlayerClass({ id: pc, boost: { id: "" }, feat: { id: "" } });
+    setPlayerClass({ id: pc, boosts: [], feat: { id: "" } });
   };
 
   return (

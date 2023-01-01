@@ -3,7 +3,12 @@ import { useBackground } from "lib/backgrounds/backgrounds.hooks";
 import BackgroundOpts from "./BackgroundOpts";
 
 export default function BackgroundOptsLoader({ background, setBackground }) {
-  const { data, isLoading, error } = useBackground(background.id);
+  const { data, isLoading, error } = useBackground(background.id, (d) => {
+    console.log(d);
+    const b = { ...background };
+    b.boosts = d.boosts.map(() => ({ id: "" }));
+    setBackground(b);
+  });
 
   if (isLoading) {
     return <Loader />;

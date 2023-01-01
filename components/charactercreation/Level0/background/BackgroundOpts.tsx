@@ -1,4 +1,4 @@
-import { Alert, ScrollArea, Spoiler, Stack, Text } from "@mantine/core";
+import { Alert, Spoiler, Stack, Text } from "@mantine/core";
 import RichTextEditor from "components/RichTextEditor";
 import { getSegmentedControlDataFromBoosts } from "lib/boosts/boostUtils";
 import { Dispatch } from "react";
@@ -8,10 +8,17 @@ import Boost from "../Boost";
 interface BackgroundOptsProps {
   background: NewPlayerCharacterBackground;
   setBackground: Dispatch<NewPlayerCharacterBackground>;
-  data;
+  data: {
+    description: string;
+    boosts;
+  };
 }
 
-export default function BackgroundOpts({ background, setBackground, data }) {
+export default function BackgroundOpts({
+  background,
+  setBackground,
+  data,
+}: BackgroundOptsProps) {
   const { description, boosts } = data;
   const boostsData = getSegmentedControlDataFromBoosts(boosts);
 
@@ -22,6 +29,8 @@ export default function BackgroundOpts({ background, setBackground, data }) {
     b.boosts = bs;
     setBackground(b);
   };
+
+  console.log(background.boosts);
 
   return (
     <Stack>
@@ -44,7 +53,7 @@ export default function BackgroundOpts({ background, setBackground, data }) {
               isFlaw={!boosts[i].isBoost}
             />
           ))}
-          {background.boosts.find((b: string) => b === "") && (
+          {background.boosts.find(({ id }) => id === "") && (
             <Alert color="red">Please confirm all Boosts are selected.</Alert>
           )}
         </>

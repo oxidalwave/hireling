@@ -489,7 +489,7 @@ async function main() {
             }))
           ),
         },
-        boost: {
+        boosts: {
           create: {
             isBoost: true,
             kind: "PLAYER_CLASS",

@@ -45,7 +45,7 @@ export default function Level0({
     boosts: [],
   });
   const [playerClass, setPlayerClass] = useState<NewPlayerCharacterPlayerClass>(
-    { id: "", feat: { id: "" }, boost: { id: "" } }
+    { id: "", feat: { id: "" }, boosts: [] }
   );
 
   const [freeBoosts, setFreeBoosts] = useState<NewPlayerCharacterFreeBoost[]>([
@@ -56,11 +56,14 @@ export default function Level0({
   ]);
 
   console.log(ancestry.boosts);
+  console.log(background.boosts);
+  console.log(freeBoosts);
+  console.log(playerClass.boosts);
   const boosts: ResourceById[] = [
     ...ancestry.boosts,
     ...background.boosts,
     ...freeBoosts,
-    playerClass.boost ?? { id: "" },
+    ...playerClass.boosts,
   ];
 
   const payload = {
@@ -93,6 +96,7 @@ export default function Level0({
     !boosts.find(({ id }) => id === "");
 
   console.log(ancestry);
+  console.log(background);
 
   return (
     <Stack>

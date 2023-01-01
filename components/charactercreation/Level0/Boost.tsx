@@ -1,14 +1,8 @@
-import { SegmentedControl } from "@mantine/core";
+import { SegmentedControl, SegmentedControlItem } from "@mantine/core";
 import { Dispatch } from "react";
 
-interface Choice {
-  label: string;
-  value: string;
-  disabled: boolean;
-}
-
 interface BoostProps {
-  choices: Choice[];
+  choices: SegmentedControlItem[];
   value: string;
   onChange: Dispatch<string>;
   isFlaw?: boolean;
@@ -22,7 +16,7 @@ export default function Boost({
 }: BoostProps) {
   const color = isFlaw ? "pink" : "blue";
 
-  console.log(value)
+  console.log(value);
 
   return (
     <SegmentedControl

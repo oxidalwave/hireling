@@ -4,11 +4,16 @@ import axios from "axios";
 
 const apiHost = "http://localhost:3000/api";
 
-export function useHireling<T>(kind: string, id: string = "") {
+export function useHireling<T>(
+  kind: string,
+  id: string = "",
+  onSuccess: (d: T) => void
+) {
   return useQuery<T, Error>({
     queryKey: id === "" ? [kind] : [kind, id],
     queryFn: () => axios.get(`${apiHost}/${kind}/${id}`).then((r) => r.data),
     onError: showNotification,
+    onSuccess,
     refetchOnWindowFocus: false,
   });
 }

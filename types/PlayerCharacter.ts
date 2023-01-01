@@ -14,8 +14,8 @@ export type NewPlayerCharacterBackground = ResourceById & {
 };
 
 export type NewPlayerCharacterPlayerClass = ResourceById & {
-  feat: { id: string };
-  boost: { id: string };
+  feat: ResourceById;
+  boosts: ResourceById[];
 };
 
 export default interface NewPlayerCharacter {

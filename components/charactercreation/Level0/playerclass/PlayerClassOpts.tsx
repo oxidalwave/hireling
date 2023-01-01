@@ -1,4 +1,9 @@
-import { Spoiler, Stack } from "@mantine/core";
+import {
+  SegmentedControlItem,
+  SelectItem,
+  Spoiler,
+  Stack,
+} from "@mantine/core";
 import RichTextEditor from "components/RichTextEditor";
 import { Dispatch } from "react";
 import { NewPlayerCharacterPlayerClass } from "types/PlayerCharacter";
@@ -9,8 +14,8 @@ export interface PlayerClassOptsProps {
   playerClass: NewPlayerCharacterPlayerClass;
   setPlayerClass: Dispatch<NewPlayerCharacterPlayerClass>;
   description?: string;
-  boostOptions: { label: string; value: string; disabled: boolean }[];
-  featOptions: { label: string; value: string };
+  boostOptions: SegmentedControlItem[][];
+  featOptions: SelectItem[];
 }
 
 export default function PlayerClassOpts({
@@ -20,13 +25,15 @@ export default function PlayerClassOpts({
   boostOptions,
   featOptions,
 }: PlayerClassOptsProps) {
-  const updateBoost = (a) => {
-    let pc = { ...playerClass };
-    pc.boost = { id: a };
-    setPlayerClass(pc);
+  const updateBoost = (i: number) => (abilityId: string) => {
+    let a = { ...playerClass };
+    let bs = a.boosts;
+    bs[i] = { id: abilityId };
+    a.boosts = bs;
+    setPlayerClass(a);
   };
 
-  const updateFeat = (f) => {
+  const updateFeat = (f: string) => {
     const pc = { ...playerClass };
     pc.feat = { id: f };
     setPlayerClass(pc);
@@ -41,11 +48,15 @@ export default function PlayerClassOpts({
           id="playerClassDescription"
         />
       </Spoiler>
-      <Boost
-        choices={boostOptions}
-        value={playerClass.boost.id}
-        onChange={updateBoost}
-      />
+      {boostOptions.map((b, i) => (
+        <Boost
+          key={`player-class-boost-${i}`}
+          choices={b}
+          value={playerClass.boosts[i].id}
+          onChange={updateBoost(i)}
+        />
+      ))}
+
       <FeatSelection
         feat={playerClass.feat}
         setFeat={updateFeat}

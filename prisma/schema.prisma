@@ -184,7 +184,7 @@ model PlayerClass {
   feats           PlayerClassFeat[]
   source          Source            @relation(fields: [sourceId], references: [id])
   sourceId        String
-  boost           Boost?
+  boosts          Boost[]
 }
 
 model Feat {

@@ -1,4 +1,4 @@
-import { Alert, ScrollArea, Select, Spoiler, Stack, Text } from "@mantine/core";
+import { Alert, Spoiler, Stack, Text } from "@mantine/core";
 import RichTextEditor from "components/RichTextEditor";
 import { getSegmentedControlDataFromBoosts } from "lib/boosts/boostUtils";
 import { Dispatch } from "react";
@@ -52,7 +52,7 @@ export default function AncestryOpts({
       {ancestry.boosts.length > 0 && (
         <>
           <Text>Boosts</Text>
-          {ancestry.boosts.map(({ id }, i) => (
+          {ancestry.boosts.map(({ id }, i: number) => (
             <Boost
               key={`ancestry-boost-${i}`}
               value={id}

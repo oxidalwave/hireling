@@ -30,8 +30,8 @@ export default function PlayerClassOptsLoader({
       console.log(d);
       console.log(playerClass);
       const pc = { ...playerClass };
-      pc.boost = { id: '' };
-      pc.feat = { id: '' };
+      pc.boosts = d.boosts.map(() => ({ id: "" }));
+      pc.feat = { id: "" };
       setPlayerClass(pc);
     },
     onError: (e: Error) => {
@@ -77,9 +77,10 @@ export default function PlayerClassOptsLoader({
   }
 
   if (playerClassData && featData) {
-    const boostOptions = getSegmentedControlDataFromBoosts([
-      playerClassData.boost,
-    ]);
+    const boostOptions = getSegmentedControlDataFromBoosts(
+      playerClassData.boosts
+    );
+    console.log(boostOptions);
 
     const featOptions = featData.map((f) => ({
       value: f.id,
@@ -91,7 +92,7 @@ export default function PlayerClassOptsLoader({
         playerClass={playerClass}
         setPlayerClass={setPlayerClass}
         description={playerClassData.description}
-        boostOptions={boostOptions[0]}
+        boostOptions={boostOptions}
         featOptions={featOptions}
       />
     );
