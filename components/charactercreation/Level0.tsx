@@ -1,4 +1,11 @@
-import { TextInput, Stack, Button, Alert, Divider } from "@mantine/core";
+import {
+  TextInput,
+  Stack,
+  Button,
+  Alert,
+  Divider,
+  SelectItem,
+} from "@mantine/core";
 import { useState } from "react";
 import { useSession } from "next-auth/react";
 import PlayerClass from "./Level0/playerclass/PlayerClass";
@@ -16,7 +23,17 @@ import FreeBoosts from "./Level0/FreeBoosts";
 import Ancestry from "./Level0/ancestry/Ancestry";
 import Background from "./Level0/background/Background";
 
-const Level0 = ({ ancestries, backgrounds, playerClasses }) => {
+interface Level0Props {
+  ancestries: SelectItem[];
+  backgrounds: SelectItem[];
+  playerClasses: SelectItem[];
+}
+
+export default function Level0({
+  ancestries,
+  backgrounds,
+  playerClasses,
+}: Level0Props) {
   const [name, setName] = useState<string>("");
   const [ancestry, setAncestry] = useState<NewPlayerCharacterAncestry>({
     id: "",
@@ -100,10 +117,7 @@ const Level0 = ({ ancestries, backgrounds, playerClasses }) => {
       <PlayerClass
         playerClass={playerClass}
         setPlayerClass={setPlayerClass}
-        playerClasses={playerClasses.map((pc) => ({
-          label: pc.name,
-          value: pc.id,
-        }))}
+        playerClasses={playerClasses}
       />
       <Divider />
       <FreeBoosts boosts={freeBoosts} setBoosts={setFreeBoosts} />
@@ -116,6 +130,4 @@ const Level0 = ({ ancestries, backgrounds, playerClasses }) => {
       )}
     </Stack>
   );
-};
-
-export default Level0;
+}

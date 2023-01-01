@@ -1,12 +1,12 @@
 import { Dispatch } from "react";
 import { NewPlayerCharacterAncestry } from "types/PlayerCharacter";
 import AncestryOptsLoader from "./AncestryOptsLoader";
-import { Select, Stack } from "@mantine/core";
+import { Select, SelectItem, Stack } from "@mantine/core";
 
 interface AncestryProps {
   ancestry: NewPlayerCharacterAncestry;
   setAncestry: Dispatch<NewPlayerCharacterAncestry>;
-  ancestries: { name: string; id: string }[];
+  ancestries: SelectItem[];
 }
 
 export default function Ancestry({
@@ -28,10 +28,7 @@ export default function Ancestry({
         searchable
         value={ancestry.id}
         onChange={updateAncestry}
-        data={ancestries.map((b) => ({
-          label: b.name,
-          value: b.id,
-        }))}
+        data={ancestries}
         label="Ancestry"
       />
       {ancestry.id !== "" && (

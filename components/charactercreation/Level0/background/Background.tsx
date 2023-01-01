@@ -2,12 +2,12 @@ import { Dispatch } from "react";
 import { NewPlayerCharacterBackground } from "types/PlayerCharacter";
 import CharacterOption from "../CharacterOption";
 import BackgroundOptsLoader from "./BackgroundOptsLoader";
-import { Select, Stack } from "@mantine/core";
+import { Select, SelectItem, Stack } from "@mantine/core";
 
 interface BackgroundProps {
   background: NewPlayerCharacterBackground;
   setBackground: Dispatch<NewPlayerCharacterBackground>;
-  backgrounds: { name: string; id: string }[];
+  backgrounds: SelectItem[];
 }
 
 export default function Background({
@@ -30,10 +30,7 @@ export default function Background({
         searchable
         value={background.id}
         onChange={updateBackground}
-        data={backgrounds.map((b) => ({
-          label: b.name,
-          value: b.id,
-        }))}
+        data={backgrounds}
         label="Background"
       />
       {background.id !== "" && (

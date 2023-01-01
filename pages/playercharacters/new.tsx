@@ -1,9 +1,10 @@
 import axios from "axios";
-import { Tabs } from "@mantine/core";
+import { SelectItem, Tabs } from "@mantine/core";
 import Level0 from "components/charactercreation/Level0";
 import Level1 from "components/charactercreation/Level1";
 import Level2 from "components/charactercreation/Level2";
 import Level3 from "components/charactercreation/Level3";
+import { entityToSelectItem } from "lib/entityToSelectItem";
 
 export async function getStaticProps(ctx) {
   const [ancestries, backgrounds, playerClasses] = await Promise.all([
@@ -14,15 +15,25 @@ export async function getStaticProps(ctx) {
 
   return {
     props: {
-      ancestries,
-      backgrounds,
-      playerClasses
+      ancestries: ancestries.map(entityToSelectItem),
+      backgrounds: backgrounds.map(entityToSelectItem),
+      playerClasses: playerClasses.map(entityToSelectItem),
     },
-    revalidate: 30
+    revalidate: 30,
   };
 }
 
-const NewPlayerCharacterPage = ({ ancestries, backgrounds, playerClasses }) => {
+interface NewPlayerCharacterPageProps {
+  ancestries: SelectItem[];
+  backgrounds: SelectItem[];
+  playerClasses: SelectItem[];
+}
+
+export default function NewPlayerCharacterPage({
+  ancestries,
+  backgrounds,
+  playerClasses,
+}: NewPlayerCharacterPageProps) {
   return (
     <Tabs defaultValue="level-0">
       <Tabs.List>
@@ -53,6 +64,4 @@ const NewPlayerCharacterPage = ({ ancestries, backgrounds, playerClasses }) => {
       </Tabs.Panel>
     </Tabs>
   );
-};
-
-export default NewPlayerCharacterPage;
+}
