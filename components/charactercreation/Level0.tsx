@@ -22,6 +22,7 @@ import {
 import FreeBoosts from "./Level0/FreeBoosts";
 import Ancestry from "./Level0/ancestry/Ancestry";
 import Background from "./Level0/background/Background";
+import { CreatePlayerCharacterPayload } from "lib/playercharacters/playercharacters.types";
 
 interface Level0Props {
   ancestries: SelectItem[];
@@ -66,21 +67,32 @@ export default function Level0({
     ...playerClass.boosts,
   ];
 
-  const payload = {
-    name,
-    ancestry: { id: ancestry.id },
-    background: { id: background.id },
-    playerClass: { id: playerClass.id },
-    boosts,
-    feats: [playerClass.feat],
-  };
+  const mkPayload: () => CreatePlayerCharacterPayload = () => ({
+    name: name,
+    ancestry: { connect: ancestry },
+    background: { connect: background },
+    playerClass: { connect: playerClass },
+    abilityScoreBoosts: {
+      create: boosts.map((b) => ({
+        abilityScoreBoost: {
+          connect: b,
+        },
+      })),
+    },
+    feats: {
+      create: [
+        { feat: { connect: ancestry.feat } },
+        { feat: { connect: playerClass.feat } },
+      ],
+    },
+  });
 
-  const logCharacter = () => console.log(payload);
+  const logCharacter = () => console.log(mkPayload());
 
   const createCharacter = async () => {
     try {
       await axios
-        .post("http://localhost:3000/api/playercharacters", payload)
+        .post("http://localhost:3000/api/playercharacters", mkPayload())
         .then((r) => r.data);
     } catch (e: any) {
       showNotification(e);

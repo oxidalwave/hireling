@@ -1,4 +1,5 @@
 import prisma from "lib/prisma";
+import { CreatePlayerCharacterPayload } from "./playercharacters.types";
 
 export async function getPlayerCharacters() {
   return await prisma.playerCharacter.findMany();
@@ -14,8 +15,8 @@ export async function getPlayerCharacterById(id) {
       abilityScoreBoosts: true,
       feats: {
         select: {
-          feat: true
-        }
+          feat: true,
+        },
       },
     },
   });
@@ -32,31 +33,13 @@ export async function getUserPlayerCharacters(email) {
   }
 }
 
-export async function createPlayerCharacter(email, body) {
+export async function createPlayerCharacter(
+  email,
+  body: CreatePlayerCharacterPayload
+) {
   return await prisma.playerCharacter.create({
     data: {
-      name: body.name,
-      ancestry: { connect: { id: body.ancestry.id } },
-      background: { connect: { id: body.background.id } },
-      playerClass: { connect: { id: body.playerClass.id } },
-      abilityScoreBoosts: {
-        create: body.boosts.map((b) => ({
-          abilityScoreBoost: {
-            connect: {
-              id: b.id,
-            },
-          },
-        })),
-      },
-      feats: {
-        create: body.feats.map((f) => ({
-          feat: {
-            connect: {
-              id: f.id,
-            },
-          },
-        })),
-      },
+      ...body,
       user: { connect: { email } },
     },
   });
