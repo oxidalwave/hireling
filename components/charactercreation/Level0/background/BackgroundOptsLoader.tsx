@@ -2,7 +2,15 @@ import BaseLoader from "components/base.loader";
 import { GetBackgroundByIdResponse } from "lib/backgrounds/backgrounds.types";
 import BackgroundOpts from "./BackgroundOpts";
 
-export default function BackgroundOptsLoader({ background, setBackground }) {
+interface BackgroundOptsLoaderProps {
+  background;
+  setBackground;
+}
+
+export default function BackgroundOptsLoader({
+  background,
+  setBackground,
+}: BackgroundOptsLoaderProps) {
   const resetBoosts = (d: GetBackgroundByIdResponse) => {
     const b = { ...background };
     b.boosts = d.boosts.map(() => ({ id: "" }));

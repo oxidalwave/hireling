@@ -80,7 +80,6 @@ export default function PlayerClassOptsLoader({
     const boostOptions = getSegmentedControlDataFromBoosts(
       playerClassData.boosts
     );
-    console.log(boostOptions);
 
     const featOptions = featData.map((f) => ({
       value: f.id,
