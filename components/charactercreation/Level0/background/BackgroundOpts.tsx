@@ -46,7 +46,7 @@ export default function BackgroundOpts({
           <Text>Boosts</Text>
           {background.boosts.map(({ id }, i: number) => (
             <Boost
-              key={`background-boost-${id}`}
+              key={`background-boost-${i}`}
               value={id}
               onChange={updateBoost(i)}
               choices={boostsData[i]}

@@ -2,7 +2,10 @@ import { Alert, Spoiler, Stack, Text } from "@mantine/core";
 import RichTextEditor from "components/RichTextEditor";
 import { getSegmentedControlDataFromBoosts } from "lib/boosts/boostUtils";
 import { Dispatch } from "react";
-import { NewPlayerCharacterAncestry } from "types/PlayerCharacter";
+import {
+  NewPlayerCharacterAncestry,
+  ResourceById,
+} from "types/PlayerCharacter";
 import Boost from "../Boost";
 import FeatSelection from "components/charactercreation/feat/FeatSelection";
 
@@ -33,9 +36,11 @@ export default function AncestryOpts({
     setAncestry(a);
   };
 
-  const updateFeat = (f) => {
+  const updateFeat = (i: number) => (featId: string) => {
     let a = { ...ancestry };
-    a.feat = { id: f };
+    let fs = a.feats;
+    fs[i] = { id: featId };
+    a.feats = fs;
     setAncestry(a);
   };
 
@@ -44,27 +49,31 @@ export default function AncestryOpts({
       <Spoiler maxHeight={120} showLabel="Show more" hideLabel="Hide">
         <RichTextEditor value={description} readOnly id="ancestryDescription" />
       </Spoiler>
-      <FeatSelection
-        feat={ancestry.feat}
-        setFeat={updateFeat}
-        feats={feats.map(({ feat }) => ({ value: feat.id, label: feat.name }))}
-      />
-      {ancestry.boosts.length > 0 && (
-        <>
-          <Text>Boosts</Text>
-          {ancestry.boosts.map(({ id }, i: number) => (
-            <Boost
-              key={`ancestry-boost-${id}`}
-              value={id}
-              onChange={updateBoost(i)}
-              choices={boostsData[i]}
-              isFlaw={!boosts[i].isBoost}
-            />
-          ))}
-          {ancestry.boosts.find(({ id }) => id === "") && (
-            <Alert color="red">Please confirm all Boosts are selected.</Alert>
-          )}
-        </>
+      {ancestry.feats.map((f: ResourceById, i: number) => (
+        <FeatSelection
+          key={`feat-${i}`}
+          feat={f}
+          setFeat={updateFeat(i)}
+          feats={feats.map(({ feat }) => ({
+            value: feat.id,
+            label: feat.name,
+          }))}
+        />
+      ))}
+      <Text>Boosts</Text>
+      <Stack>
+        {ancestry.boosts.map((b: ResourceById, i: number) => (
+          <Boost
+            key={`ancestry-boost-${i}`}
+            value={b.id}
+            onChange={updateBoost(i)}
+            choices={boostsData[i]}
+            isFlaw={!boosts[i].isBoost}
+          />
+        ))}
+      </Stack>
+      {ancestry.boosts.find(({ id }) => id === "") && (
+        <Alert color="red">Please confirm all Boosts are selected.</Alert>
       )}
     </Stack>
   );

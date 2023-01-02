@@ -1,4 +1,5 @@
 import BaseLoader from "components/base.loader";
+import { GetAncestryByIdResponse } from "lib/ancestry/ancestries.types";
 import { Dispatch } from "react";
 import { NewPlayerCharacterAncestry } from "types/PlayerCharacter";
 import AncestryOpts from "./AncestryOpts";
@@ -12,10 +13,10 @@ export default function AncestryOptsLoader({
   ancestry,
   setAncestry,
 }: AncestryOptsLoaderProps): JSX.Element {
-  const resetFeatAndBoosts = (d) => {
+  const resetFeatAndBoosts = (d: GetAncestryByIdResponse) => {
     console.log(d);
     const a = { ...ancestry };
-    a.feat = { id: "" };
+    a.feats = [{ id: "" }];
     a.boosts = d.boosts.map(() => ({ id: "" }));
     setAncestry(a);
   };

@@ -39,7 +39,7 @@ export default function Level0({
   const [ancestry, setAncestry] = useState<NewPlayerCharacterAncestry>({
     id: "",
     boosts: [],
-    feat: { id: "" },
+    feats: [],
   });
   const [background, setBackground] = useState<NewPlayerCharacterBackground>({
     id: "",
@@ -81,7 +81,7 @@ export default function Level0({
     },
     feats: {
       create: [
-        { feat: { connect: ancestry.feat } },
+        ...ancestry.feats.map((f) => ({ feat: { connect: f } })),
         { feat: { connect: playerClass.feat } },
       ],
     },
