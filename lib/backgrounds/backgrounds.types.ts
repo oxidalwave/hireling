@@ -1,29 +1,45 @@
-export type GetBackgroundByIdResponse = {
-  id: string;
-  name: string;
-  description: string;
-  source: {
-    id: string;
-    name: string;
-  };
-  boosts: {
-    id: string;
-    isBoost: boolean;
-    abilityScores: {
-      id: string;
-      abilityScore: {
-        id: string;
-        name: string;
-      };
-    }[];
-  }[];
-};
+import { Prisma } from "@prisma/client";
 
-export type GetBackgroundsResponse = {
-  id: string;
-  name: string;
-  source: {
-    id: string;
-    name: string;
+export type GetBackgroundByIdResponse = Prisma.BackgroundGetPayload<{
+  select: {
+    id: true;
+    name: true;
+    description: true;
+    source: {
+      select: {
+        id: true;
+        name: true;
+      };x
+    };
+    boosts: {
+      select: {
+        id: true;
+        isBoost: true;
+        abilityScores: {
+          select: {
+            id: true;
+            abilityScore: {
+              select: {
+                id: true;
+                name: true;
+              };
+            };
+          };
+        };
+      };
+    };
   };
-}[];
+}>;
+
+export type GetBackgroundsResponse = Prisma.BackgroundGetPayload<{
+  select: {
+    id: true;
+    name: true;
+    source: {
+      select: {
+        id: true;
+        name: true;
+      };
+    };
+  };
+}>[];
