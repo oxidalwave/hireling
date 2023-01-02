@@ -1,6 +1,9 @@
 import { Ancestry, Prisma } from "@prisma/client";
 import prisma from "lib/prisma";
-import { GetAncestryByIdResponse } from "./ancestries.types";
+import {
+  GetAncestriesResponse,
+  GetAncestryByIdResponse,
+} from "./ancestries.types";
 
 function createAncestryAndSource(
   ancestry: Omit<Ancestry, "id">,
@@ -25,13 +28,20 @@ export async function getAncestryCount(): Promise<number> {
   return await prisma.ancestry.count();
 }
 
-export async function getAncestries(where = {}) {
+export async function getAncestries(
+  where = {}
+): Promise<GetAncestriesResponse> {
   return await prisma.ancestry.findMany({
     where,
     select: {
       id: true,
       name: true,
-      source: true,
+      source: {
+        select: {
+          id: true,
+          name: true,
+        },
+      },
     },
   });
 }

@@ -1,38 +1,45 @@
-export type GetAncestryByIdResponse = {
-  id: string;
-  name: string;
-  description: string;
-  hp: number;
-  size: string;
-  speed: number;
-  source: {
-    id: string;
-    name: string;
-  };
-  feats: {
-    feat: {
-      id: string;
-      name: string;
-    };
-  }[];
-  boosts: {
-    id: string;
-    isBoost: boolean;
-    abilityScores: {
-      abilityScore: {
-        id: string;
-        name: string;
-        abbreviatedName: string;
-      };
-    }[];
-  }[];
-};
+import { Prisma } from "@prisma/client";
 
-export type GetAncestriesResponse = {
-  id: string;
-  name: string;
-  source: {
-    id: string;
-    name: string;
+export type GetAncestryByIdResponse = Prisma.AncestryGetPayload<{
+  select: {
+    id: true;
+    name: true;
+    description: true;
+    hp: true;
+    size: true;
+    speed: true;
+    source: {
+      select: {
+        id: true;
+        name: true;
+      };
+    };
+    feats: {
+      select: {
+        feat: { select: { id: true; name: true } };
+      };
+    };
+    boosts: {
+      select: {
+        id: true;
+        isBoost: true;
+        abilityScores: {
+          select: {
+            id: true;
+            abilityScore: {
+              select: { id: true; name: true; abbreviatedName: true };
+            };
+          };
+        };
+      };
+    };
   };
-}[];
+}>;
+
+export type GetAncestriesResponse = Prisma.AncestryGetPayload<{
+  select: {
+    id: true;
+    name: true;
+    source: true;
+  };
+}>[];
