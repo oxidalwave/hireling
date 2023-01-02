@@ -1,36 +1,27 @@
-import { Alert, Loader } from "@mantine/core";
-import { useBackground } from "lib/backgrounds/backgrounds.hooks";
+import BaseLoader from "components/base.loader";
+import { GetBackgroundByIdResponse } from "lib/backgrounds/backgrounds.types";
 import BackgroundOpts from "./BackgroundOpts";
 
 export default function BackgroundOptsLoader({ background, setBackground }) {
-  const { data, isLoading, error } = useBackground(background.id, (d) => {
-    console.log(d);
+  const resetBoosts = (d: GetBackgroundByIdResponse) => {
     const b = { ...background };
     b.boosts = d.boosts.map(() => ({ id: "" }));
     setBackground(b);
-  });
+  };
 
-  if (isLoading) {
-    return <Loader />;
-  }
-
-  if (error) {
-    return (
-      <Alert color="red">
-        Could not load the Ancestry. Please check your notifications.
-      </Alert>
-    );
-  }
-
-  if (data) {
-    return (
-      <BackgroundOpts
-        background={background}
-        setBackground={setBackground}
-        data={data}
-      />
-    );
-  }
-
-  return <Alert color="red'">Could not generate JSX</Alert>;
+  return (
+    <BaseLoader
+      resourceKind="backgrounds"
+      id={background.id}
+      onSuccess={resetBoosts}
+    >
+      {(d) => (
+        <BackgroundOpts
+          background={background}
+          setBackground={setBackground}
+          data={d}
+        />
+      )}
+    </BaseLoader>
+  );
 }

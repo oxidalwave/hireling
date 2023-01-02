@@ -1,8 +1,4 @@
-import { Alert, Loader } from "@mantine/core";
-import { showNotification } from "@mantine/notifications";
-import { useQuery } from "@tanstack/react-query";
-import axios from "axios";
-import { useAncestry } from "lib/ancestry/ancestries.hooks";
+import BaseLoader from "components/base.loader";
 import { Dispatch } from "react";
 import { NewPlayerCharacterAncestry } from "types/PlayerCharacter";
 import AncestryOpts from "./AncestryOpts";
@@ -16,33 +12,23 @@ export default function AncestryOptsLoader({
   ancestry,
   setAncestry,
 }: AncestryOptsLoaderProps): JSX.Element {
-  console.log(ancestry);
-
-  const { data, isLoading, error } = useAncestry(ancestry.id, (d) => {
+  const resetFeatAndBoosts = (d) => {
     console.log(d);
     const a = { ...ancestry };
     a.feat = { id: "" };
     a.boosts = d.boosts.map(() => ({ id: "" }));
     setAncestry(a);
-  });
+  };
 
-  if (isLoading) {
-    return <Loader />;
-  }
-
-  if (error) {
-    return (
-      <Alert color="red">
-        Could not load the Ancestry. Please check your notifications.
-      </Alert>
-    );
-  }
-
-  if (data) {
-    return (
-      <AncestryOpts ancestry={ancestry} setAncestry={setAncestry} data={data} />
-    );
-  }
-
-  return <Alert color="red'">Could not generate JSX</Alert>;
+  return (
+    <BaseLoader
+      resourceKind="ancestries"
+      id={ancestry.id}
+      onSuccess={resetFeatAndBoosts}
+    >
+      {(d) => (
+        <AncestryOpts ancestry={ancestry} setAncestry={setAncestry} data={d} />
+      )}
+    </BaseLoader>
+  );
 }
