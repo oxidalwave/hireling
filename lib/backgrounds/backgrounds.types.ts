@@ -9,7 +9,7 @@ export type GetBackgroundByIdResponse = Prisma.BackgroundGetPayload<{
       select: {
         id: true;
         name: true;
-      };x
+      };
     };
     boosts: {
       select: {
