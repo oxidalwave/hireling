@@ -54,7 +54,7 @@ export default function AncestryOpts({
           <Text>Boosts</Text>
           {ancestry.boosts.map(({ id }, i: number) => (
             <Boost
-              key={`ancestry-boost-${i}`}
+              key={`ancestry-boost-${id}`}
               value={id}
               onChange={updateBoost(i)}
               choices={boostsData[i]}

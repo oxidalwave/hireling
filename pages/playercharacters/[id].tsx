@@ -62,7 +62,7 @@ const PlayerCharacterPage = ({ playercharacter }) => {
         {playercharacter.feats.map(({ feat }, i) => {
           console.log(feat);
           return (
-            <Accordion.Item key={i} value={feat.id}>
+            <Accordion.Item key={feat.id} value={feat.id}>
               <Accordion.Control>{feat.name}</Accordion.Control>
               <Accordion.Panel>
                 <RichTextEditor

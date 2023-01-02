@@ -98,7 +98,7 @@ export default function FreeBoosts({ boosts, setBoosts, count = 4 }) {
     <>
       {freeBoostData.map((b, i) => (
         <Boost
-          key={`free-boost-${i}`}
+          key={`free-boost-${b.value}`}
           value={boosts[i].id}
           onChange={updateBoost(i)}
           choices={b}

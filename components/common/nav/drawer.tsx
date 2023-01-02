@@ -20,7 +20,7 @@ export const Drawer = ({ open, pages }) => {
             },
             i
           ) => (
-            <div key={`page-${i}`}>
+            <div key={`page-${p.href}`}>
               <UnstyledButton
                 sx={(theme) => ({
                   display: "block",
