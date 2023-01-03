@@ -1,36 +1,43 @@
-import { Group, Select, Stack } from "@mantine/core";
-import axios from "axios";
+import { Alert, Group, Loader, Select, Stack } from "@mantine/core";
 import DataTable from "components/common/datatable";
 import { GetAncestriesResponse } from "lib/ancestry/ancestries.types";
-import { GetStaticPropsContext } from "next";
+import { useHireling } from "lib/hooks/useQuery";
 import { useState } from "react";
 
 const rowsPerPage = 16;
 
-export async function getStaticProps(ctx: GetStaticPropsContext) {
-  const ancestries: GetAncestriesResponse = await axios
-    .get(`${process.env.NEXT_PUBLIC_URL}/api/ancestries`)
-    .then((r) => r.data);
-
-  const sources: { id: string; name: string }[] = await axios
-    .get(`${process.env.NEXT_PUBLIC_URL}/api/sources?resourcetype=ancestries`)
-    .then((r) => r.data);
-
-  return {
-    props: {
-      ancestries: ancestries.map((a) => ({
-        id: a.id,
-        name: a.name,
-        source: a.source.name,
-      })),
-      sources: sources.map(({ id, name }) => ({ label: name, value: id })),
-    },
-    revalidate: 30,
-  };
-}
-
-const AncestriesPage = ({ ancestries, sources }) => {
+const AncestriesPage = ({}) => {
   const [source, setSource] = useState<string | null>("");
+
+  const {
+    data: ancestriesData,
+    isLoading: isLoadingAncestries,
+    error: errorAncestries,
+  } = useHireling<GetAncestriesResponse>("ancestries", "", () => {});
+  const {
+    data: sources,
+    isLoading: isLoadingSources,
+    error: errorSources,
+  } = useHireling<{ name: string }[]>("sources", "", () => {});
+
+  if (isLoadingAncestries || isLoadingSources) {
+    return <Loader />;
+  }
+  if (errorAncestries || errorSources) {
+    return <Alert color="red">ERROR</Alert>;
+  }
+
+  if (ancestriesData === undefined) {
+    throw Error("");
+  }
+  if (sources === undefined) {
+    throw Error("");
+  }
+  const ancestries = ancestriesData.map((a) => ({
+    id: a.id,
+    name: a.name,
+    source: a.source.name,
+  }));
 
   const columns = [
     { key: "name", value: "Name" },
@@ -54,7 +61,7 @@ const AncestriesPage = ({ ancestries, sources }) => {
           label="Source"
           clearable
           searchable
-          data={sources}
+          data={sources.map((s) => s.name)}
           value={source}
           onChange={setSource}
         />
