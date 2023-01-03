@@ -14,7 +14,7 @@ function FeatDataByIdLoader({ id }: FeatDataByIdProps) {
   const { data, error, isLoading } = useQuery({
     queryKey: ["feat", id],
     queryFn: () =>
-      axios.get(`http://localhost:3000/api/feats/${id}`).then((r) => r.data),
+      axios.get(`${process.env.NEXT_PUBLIC_URL}/api/feats/${id}`).then((r) => r.data),
     onSuccess: console.log,
     onError: showNotification,
     refetchOnWindowFocus: false,

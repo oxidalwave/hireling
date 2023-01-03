@@ -7,11 +7,11 @@ const rowsPerPage = 16;
 
 export async function getServerSideProps(ctx) {
   const backgrounds = await axios
-    .get(`http://localhost:3000/api/backgrounds`)
+    .get(`${process.env.NEXT_PUBLIC_URL}/api/backgrounds`)
     .then((r) => r.data);
 
   const sources = await axios
-    .get(`http://localhost:3000/api/sources?resourcetype=backgrounds`)
+    .get(`${process.env.NEXT_PUBLIC_URL}/api/sources?resourcetype=backgrounds`)
     .then((r) => r.data);
 
   return {

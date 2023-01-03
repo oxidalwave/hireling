@@ -7,7 +7,7 @@ import { ResourceById } from "types/PlayerCharacter";
 export async function getServerSideProps(ctx) {
   const { id } = ctx.query;
   const playercharacter = await axios
-    .get(`http://localhost:3000/api/playercharacters/${id}`)
+    .get(`${process.env.NEXT_PUBLIC_URL}/api/playercharacters/${id}`)
     .then((r) => r.data);
 
   return {

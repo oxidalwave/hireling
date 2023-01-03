@@ -7,11 +7,11 @@ const rowsPerPage = 16;
 
 export async function getServerSideProps(ctx) {
   const ancestries = await axios
-    .get(`http://localhost:3000/api/ancestries`)
+    .get(`${process.env.NEXT_PUBLIC_URL}/api/ancestries`)
     .then((r) => r.data);
 
   const sources = await axios
-    .get(`http://localhost:3000/api/sources?resourcetype=ancestries`)
+    .get(`${process.env.NEXT_PUBLIC_URL}/api/sources?resourcetype=ancestries`)
     .then((r) => r.data);
 
   return {

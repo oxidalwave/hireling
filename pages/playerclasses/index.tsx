@@ -5,11 +5,11 @@ import { useState } from "react";
 
 export async function getServerSideProps(ctx) {
   const playerclasses = await axios
-    .get(`http://localhost:3000/api/playerclasses`)
+    .get(`${process.env.NEXT_PUBLIC_URL}/api/playerclasses`)
     .then((r) => r.data);
 
   const sources = await axios
-    .get(`http://localhost:3000/api/sources?resourcetype=playerClasses`)
+    .get(`${process.env.NEXT_PUBLIC_URL}localhost:3000/api/sources?resourcetype=playerClasses`)
     .then((r) => r.data);
 
   return {

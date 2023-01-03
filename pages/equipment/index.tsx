@@ -7,11 +7,11 @@ const rowsPerPage = 16;
 
 export async function getServerSideProps(ctx) {
   const equipment = await axios
-    .get(`http://localhost:3000/api/equipment`)
+    .get(`${process.env.NEXT_PUBLIC_URL}/api/equipment`)
     .then((r) => r.data);
 
   const sources = await axios
-    .get(`http://localhost:3000/api/sources?resourcetype=equipment`)
+    .get(`${process.env.NEXT_PUBLIC_URL}/api/sources?resourcetype=equipment`)
     .then((r) => r.data);
 
   return {

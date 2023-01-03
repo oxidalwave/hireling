@@ -24,7 +24,7 @@ export default function PlayerClassOptsLoader({
     queryKey: ["playerclasses", playerClass.id],
     queryFn: () =>
       axios
-        .get(`http://localhost:3000/api/playerclasses/${playerClass.id}`)
+        .get(`${process.env.NEXT_PUBLIC_URL}/api/playerclasses/${playerClass.id}`)
         .then((r) => r.data),
     onSuccess: (d) => {
       console.log(d);
@@ -52,7 +52,7 @@ export default function PlayerClassOptsLoader({
     queryFn: () =>
       axios
         .get(
-          `http://localhost:3000/api/feats?className=${playerClassData?.name}`
+          `${process.env.NEXT_PUBLIC_URL}/api/feats?className=${playerClassData?.name}`
         )
         .then((r) => r.data),
     onError: (e: Error) => {

@@ -3,7 +3,7 @@ const nextConfig = {
   reactStrictMode: true,
   swcMinify: true,
   publicRuntimeConfig: {
-    backendUrl: "http://localhost:3000/api",
+    backendUrl: `${process.env.NEXT_PUBLIC_URL}/api`,
   },
 };
 

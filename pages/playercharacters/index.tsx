@@ -18,7 +18,7 @@ export async function getServerSideProps(ctx) {
   if (session) {
     const playercharacters = await axios
       .get(
-        `http://localhost:3000/api/playercharacters?email=${session.user?.email}`
+        `${process.env.NEXT_PUBLIC_URL}/api/playercharacters?email=${session.user?.email}`
       )
       .then((r) => r.data);
 

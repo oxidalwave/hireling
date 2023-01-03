@@ -14,7 +14,7 @@ import axios from "axios";
 export async function getServerSideProps(ctx) {
   const { id } = ctx.query;
   const playerclass = await axios
-    .get(`http://localhost:3000/api/playerclasses/${id}`)
+    .get(`${process.env.NEXT_PUBLIC_URL}/api/playerclasses/${id}`)
     .then((r) => r.data);
 
   return {

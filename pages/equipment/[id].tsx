@@ -5,7 +5,7 @@ import axios from "axios";
 export async function getServerSideProps(ctx) {
   const { id } = ctx.query;
   const equipment = await axios
-    .get(`http://localhost:3000/api/equipment/${id}`)
+    .get(`${process.env.NEXT_PUBLIC_URL}/api/equipment/${id}`)
     .then((r) => r.data);
 
   return {

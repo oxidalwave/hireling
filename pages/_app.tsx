@@ -30,7 +30,7 @@ export default function App({
   pageProps: { session, ...pageProps },
 }: AppProps) {
   const { publicRuntimeConfig } = getConfig();
-  axios.defaults.baseURL = "http://localhost:3000/api"; // TODO: Why isn't this working with the runtime config
+  axios.defaults.baseURL = `${process.env.NEXT_PUBLIC_URL}/api`; // TODO: Why isn't this working with the runtime config
 
   const router = useRouter();
   const path = router.asPath;

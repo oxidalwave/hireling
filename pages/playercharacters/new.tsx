@@ -8,9 +8,9 @@ import { entityToSelectItem } from "lib/entityToSelectItem";
 
 export async function getServerSideProps(ctx) {
   const [ancestries, backgrounds, playerClasses] = await Promise.all([
-    axios.get(`http://localhost:3000/api/ancestries`).then((r) => r.data),
-    axios.get(`http://localhost:3000/api/backgrounds`).then((r) => r.data),
-    axios.get(`http://localhost:3000/api/playerclasses`).then((r) => r.data),
+    axios.get(`${process.env.NEXT_PUBLIC_URL}/api/ancestries`).then((r) => r.data),
+    axios.get(`${process.env.NEXT_PUBLIC_URL}/api/backgrounds`).then((r) => r.data),
+    axios.get(`${process.env.NEXT_PUBLIC_URL}/api/playerclasses`).then((r) => r.data),
   ]);
 
   return {

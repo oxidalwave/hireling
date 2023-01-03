@@ -16,7 +16,7 @@ export default function FreeBoosts({ boosts, setBoosts, count = 4 }) {
   const { data, isLoading, error } = useQuery({
     queryFn: () =>
       axios
-        .get(`http://localhost:3000/api/boosts/free?take=${count}`)
+        .get(`${process.env.NEXT_PUBLIC_URL}/api/boosts/free?take=${count}`)
         .then((r) => r.data),
     queryKey: ["boost", "free"],
     onSuccess: (d) => {

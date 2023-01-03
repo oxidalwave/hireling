@@ -2,7 +2,7 @@ import { showNotification } from "@mantine/notifications";
 import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
 
-const apiHost = "http://localhost:3000/api";
+const apiHost = `${process.env.NEXT_PUBLIC_URL}/api`;
 
 export function useHireling<T>(
   kind: string,

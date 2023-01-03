@@ -33,7 +33,7 @@ const AbilityScores = ({ boosts }: AbilityScoresProps) => {
       .map(({ id }) => ({
         queryFn: () =>
           axios
-            .get(`http://localhost:3000/api/abilityscoreboosts/${id}`)
+            .get(`${process.env.NEXT_PUBLIC_URL}/api/abilityscoreboosts/${id}`)
             .then((r) => r.data),
         queryKey: ["boost", id],
       })),

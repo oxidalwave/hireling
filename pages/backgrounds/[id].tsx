@@ -8,7 +8,7 @@ import axios from "axios";
 export async function getServerSideProps(ctx) {
   const { id } = ctx.query;
   const background = await axios
-    .get(`http://localhost:3000/api/backgrounds/${id}`)
+    .get(`${process.env.NEXT_PUBLIC_URL}/api/backgrounds/${id}`)
     .then((r) => r.data);
 
   return {
