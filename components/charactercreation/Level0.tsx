@@ -92,7 +92,7 @@ export default function Level0({
   const createCharacter = async () => {
     try {
       await axios
-        .post("http://localhost:3000/api/playercharacters", mkPayload())
+        .post(`${process.env.NEXT_PUBLIC_URL}/api/playercharacters`, mkPayload())
         .then((r) => r.data);
     } catch (e: any) {
       showNotification(e);
