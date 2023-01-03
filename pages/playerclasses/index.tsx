@@ -3,7 +3,7 @@ import axios from "axios";
 import DataTable from "components/common/datatable";
 import { useState } from "react";
 
-export async function getStaticProps(ctx) {
+export async function getServerSideProps(ctx) {
   const playerclasses = await axios
     .get(`http://localhost:3000/api/playerclasses`)
     .then((r) => r.data);
@@ -21,7 +21,6 @@ export async function getStaticProps(ctx) {
       })),
       sources: sources.map((s) => s.name),
     },
-    revalidate: 30,
   };
 }
 

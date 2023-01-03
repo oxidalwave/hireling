@@ -6,7 +6,7 @@ import Level2 from "components/charactercreation/Level2";
 import Level3 from "components/charactercreation/Level3";
 import { entityToSelectItem } from "lib/entityToSelectItem";
 
-export async function getStaticProps(ctx) {
+export async function getServerSideProps(ctx) {
   const [ancestries, backgrounds, playerClasses] = await Promise.all([
     axios.get(`http://localhost:3000/api/ancestries`).then((r) => r.data),
     axios.get(`http://localhost:3000/api/backgrounds`).then((r) => r.data),
@@ -19,7 +19,6 @@ export async function getStaticProps(ctx) {
       backgrounds: backgrounds.map(entityToSelectItem),
       playerClasses: playerClasses.map(entityToSelectItem),
     },
-    revalidate: 30,
   };
 }
 

@@ -5,7 +5,7 @@ import { useState } from "react";
 
 const rowsPerPage = 16;
 
-export async function getStaticProps(ctx) {
+export async function getServerSideProps(ctx) {
   const equipment = await axios
     .get(`http://localhost:3000/api/equipment`)
     .then((r) => r.data);
@@ -23,7 +23,6 @@ export async function getStaticProps(ctx) {
       })),
       sources: sources.map((s) => s.name),
     },
-    revalidate: 30
   };
 }
 
