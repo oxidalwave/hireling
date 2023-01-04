@@ -12,18 +12,16 @@ export default function Breadcrumb({ path }) {
 
   return (
     <Breadcrumbs>
-      <Link legacyBehavior href="/">
-        <Anchor>Home</Anchor>
-      </Link>
+      <Anchor component={Link} href={"/"}>
+        Home
+      </Anchor>
 
       {pathParts.map((pathPart, i) => (
-        <Link key={`breadcrumb-${i}`} legacyBehavior href={pathPart.href}>
-          <Anchor>
-            {pathPart.label
-              .split(" ")
-              .map((w, i) => w[0].toUpperCase() + w.substring(1))}
-          </Anchor>
-        </Link>
+        <Anchor key={`breadcrumb-${i}`} component={Link} href={pathPart.href}>
+          {pathPart.label
+            .split(" ")
+            .map((w, i) => w[0].toUpperCase() + w.substring(1))}
+        </Anchor>
       ))}
     </Breadcrumbs>
   );
