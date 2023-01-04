@@ -1,10 +1,10 @@
-import { Alert, Button, Stack, Text } from "@mantine/core";
-import axios from "axios";
+import { Button, Stack, Text } from "@mantine/core";
 import DataTable from "components/common/datatable";
 import { unstable_getServerSession } from "next-auth";
 import { useSession } from "next-auth/react";
 import { authOptions } from "pages/api/auth/[...nextauth]";
 import Link from "next/link";
+import { getUserPlayerCharacters } from "lib/playercharacters/playercharacters.service";
 
 const rowsPerPage = 16;
 
@@ -16,11 +16,7 @@ export async function getServerSideProps(ctx) {
   );
 
   if (session) {
-    const playercharacters = await axios
-      .get(
-        `${process.env.NEXT_PUBLIC_URL}/api/playercharacters?email=${session.user?.email}`
-      )
-      .then((r) => r.data);
+    const playercharacters = await getUserPlayerCharacters(session.user?.email);
 
     return {
       props: {

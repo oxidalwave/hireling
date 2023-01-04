@@ -1,16 +1,18 @@
-import axios from "axios";
 import { SelectItem, Tabs } from "@mantine/core";
 import Level0 from "components/charactercreation/Level0";
 import Level1 from "components/charactercreation/Level1";
 import Level2 from "components/charactercreation/Level2";
 import Level3 from "components/charactercreation/Level3";
 import { entityToSelectItem } from "lib/entityToSelectItem";
+import { getAncestries } from "lib/ancestry/ancestries.service";
+import { getBackgrounds } from "lib/backgrounds/backgrounds.service";
+import { getPlayerClasses } from "lib/playerclasses/playerclasses.service";
 
 export async function getServerSideProps(ctx) {
   const [ancestries, backgrounds, playerClasses] = await Promise.all([
-    axios.get(`${process.env.NEXT_PUBLIC_URL}/api/ancestries`).then((r) => r.data),
-    axios.get(`${process.env.NEXT_PUBLIC_URL}/api/backgrounds`).then((r) => r.data),
-    axios.get(`${process.env.NEXT_PUBLIC_URL}/api/playerclasses`).then((r) => r.data),
+    getAncestries(),
+    getBackgrounds(),
+    getPlayerClasses(),
   ]);
 
   return {

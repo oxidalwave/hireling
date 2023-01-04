@@ -1,5 +1,5 @@
 import {
-  getPlayerClass
+  getPlayerClassById
 } from "lib/playerclasses/playerclasses.service";
 import { NextApiRequest, NextApiResponse } from "next";
 
@@ -22,7 +22,7 @@ async function handleGet(req: NextApiRequest, res: NextApiResponse) {
   if (typeof id !== "string") {
     res.status(400).json({ error: `Bad ID: ${id}` });
   } else {
-    const playerClass = await getPlayerClass(id);
+    const playerClass = await getPlayerClassById(id);
     res.status(200).json(playerClass);
   }
 }

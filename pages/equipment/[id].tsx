@@ -1,12 +1,10 @@
 import { Card, Stack, Text, Title } from "@mantine/core";
 import RichTextEditor from "components/RichTextEditor";
-import axios from "axios";
+import { getEquipmentById } from "lib/equipment/equipment.service";
 
 export async function getServerSideProps(ctx) {
   const { id } = ctx.query;
-  const equipment = await axios
-    .get(`${process.env.NEXT_PUBLIC_URL}/api/equipment/${id}`)
-    .then((r) => r.data);
+  const equipment = await getEquipmentById(id);
 
   return {
     props: {

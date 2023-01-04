@@ -1,14 +1,12 @@
-import { Accordion, Card, ScrollArea, Text, Title } from "@mantine/core";
-import axios from "axios";
+import { Accordion, Card, Title } from "@mantine/core";
 import AbilityScores from "components/charactercreation/Level0/AbilityScores";
 import RichTextEditor from "components/RichTextEditor";
+import { getPlayerCharacterById } from "lib/playercharacters/playercharacters.service";
 import { ResourceById } from "types/PlayerCharacter";
 
 export async function getServerSideProps(ctx) {
   const { id } = ctx.query;
-  const playercharacter = await axios
-    .get(`${process.env.NEXT_PUBLIC_URL}/api/playercharacters/${id}`)
-    .then((r) => r.data);
+  const playercharacter = await getPlayerCharacterById(id);
 
   return {
     props: {

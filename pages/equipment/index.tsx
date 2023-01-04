@@ -1,18 +1,15 @@
 import { Group, Select, Stack } from "@mantine/core";
-import axios from "axios";
 import DataTable from "components/common/datatable";
+import { getAllEquipment } from "lib/equipment/equipment.service";
+import { getSourcesFor } from "lib/source/source.service";
 import { useState } from "react";
 
 const rowsPerPage = 16;
 
 export async function getServerSideProps(ctx) {
-  const equipment = await axios
-    .get(`${process.env.NEXT_PUBLIC_URL}/api/equipment`)
-    .then((r) => r.data);
+  const equipment = await getAllEquipment();
 
-  const sources = await axios
-    .get(`${process.env.NEXT_PUBLIC_URL}/api/sources?resourcetype=equipment`)
-    .then((r) => r.data);
+  const sources = await getSourcesFor("equipment");
 
   return {
     props: {

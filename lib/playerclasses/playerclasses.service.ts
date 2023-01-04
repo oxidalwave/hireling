@@ -20,7 +20,7 @@ export async function getPlayerClasses(): Promise<GetPlayerClassesResponse> {
   });
 }
 
-export async function getPlayerClass(
+export async function getPlayerClassById(
   id: string
 ): Promise<GetPlayerClassByIdResponse | null> {
   return await prisma.playerClass.findUnique({

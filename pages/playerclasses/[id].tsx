@@ -1,21 +1,12 @@
-import {
-  ActionIcon,
-  Card,
-  Group,
-  Stack,
-  Text,
-  Title,
-} from "@mantine/core";
+import { ActionIcon, Card, Group, Stack, Text, Title } from "@mantine/core";
 import { IconPencil } from "@tabler/icons";
 import { useState } from "react";
 import { RichTextEditor } from "components/RichTextEditor";
-import axios from "axios";
+import { getPlayerClassById } from "lib/playerclasses/playerclasses.service";
 
 export async function getServerSideProps(ctx) {
   const { id } = ctx.query;
-  const playerclass = await axios
-    .get(`${process.env.NEXT_PUBLIC_URL}/api/playerclasses/${id}`)
-    .then((r) => r.data);
+  const playerclass = await getPlayerClassById(id);
 
   return {
     props: {
@@ -27,7 +18,9 @@ export async function getServerSideProps(ctx) {
 const PlayerClassPage = ({ playerclass }) => {
   const [readOnly, setReadOnly] = useState<boolean>(true);
   const toggleReadOnly = () => setReadOnly((ro) => !ro);
-  const [editedDescription, setEditedDescription] = useState<string>("");
+  const [editedDescription, setEditedDescription] = useState<string>(
+    playerclass.description
+  );
 
   return (
     <Card>
@@ -44,7 +37,7 @@ const PlayerClassPage = ({ playerclass }) => {
           readOnly={readOnly}
           id="description"
         />
-        <Text ta="right">{playerclass.source}</Text>
+        <Text ta="right">{playerclass.source.name}</Text>
       </Stack>
     </Card>
   );
