@@ -1,18 +1,15 @@
 import { Group, Select, Stack } from "@mantine/core";
-import axios from "axios";
 import DataTable from "components/common/datatable";
+import { getBackgrounds } from "lib/backgrounds/backgrounds.service";
+import { getSourcesFor } from "lib/source/source.service";
 import { useState } from "react";
 
 const rowsPerPage = 16;
 
 export async function getServerSideProps(ctx) {
-  const backgrounds = await axios
-    .get(`${process.env.NEXT_PUBLIC_URL}/api/backgrounds`)
-    .then((r) => r.data);
+  const backgrounds = await getBackgrounds();
 
-  const sources = await axios
-    .get(`${process.env.NEXT_PUBLIC_URL}/api/sources?resourcetype=backgrounds`)
-    .then((r) => r.data);
+  const sources = await getSourcesFor("backgrounds");
 
   return {
     props: {
@@ -35,7 +32,7 @@ const BackgroundsPage = ({ backgrounds, sources }) => {
   ];
 
   const rowData = backgrounds
-    .filter((b) => !source || b.source.name === source)
+    .filter((b) => !source || b.source === source)
     .map((b) => ({
       href: `/backgrounds/${b.id}`,
       columns: [

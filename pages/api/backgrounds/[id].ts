@@ -1,7 +1,7 @@
 import { Background } from "@prisma/client";
 import {
   deleteBackground,
-  getBackground,
+  getBackgroundById,
   updateBackground,
 } from "lib/backgrounds/backgrounds.service";
 import { NextApiRequest, NextApiResponse } from "next";
@@ -46,7 +46,7 @@ async function handleDelete(
 async function handleGet(req: NextApiRequest, res: NextApiResponse) {
   const id: string | string[] | undefined = req.query.id;
   if (id === "string") {
-    const background = await getBackground(id);
+    const background = await getBackgroundById(id);
     if (background === null) {
       res.status(404).json({ error: "Background could not be found" });
     } else {

@@ -4,12 +4,14 @@ import { RichTextEditor } from "components/RichTextEditor";
 import { useState } from "react";
 import { IconPencil } from "@tabler/icons";
 import axios from "axios";
+import { getBackgroundById } from "lib/backgrounds/backgrounds.service";
+import { GetBackgroundByIdResponse } from "lib/backgrounds/backgrounds.types";
 
 export async function getServerSideProps(ctx) {
   const { id } = ctx.query;
-  const background = await axios
-    .get(`${process.env.NEXT_PUBLIC_URL}/api/backgrounds/${id}`)
-    .then((r) => r.data);
+  const background: GetBackgroundByIdResponse | null = await getBackgroundById(
+    id
+  );
 
   return {
     props: {

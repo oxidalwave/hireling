@@ -10,13 +10,11 @@ import {
 import { RichTextEditor } from "components/RichTextEditor";
 import { useState } from "react";
 import { IconPencil } from "@tabler/icons";
-import axios from "axios";
+import { getAncestryById } from "lib/ancestry/ancestries.service";
 
 export async function getServerSideProps(ctx) {
   const { id } = ctx.query;
-  const ancestry = await axios
-    .get(`${process.env.NEXT_PUBLIC_URL}/api/ancestries/${id}`)
-    .then((r) => r.data);
+  const ancestry = await getAncestryById(id);
 
   return {
     props: {
@@ -28,7 +26,9 @@ export async function getServerSideProps(ctx) {
 const AncestryPage = ({ ancestry }) => {
   const [readOnly, setReadOnly] = useState<boolean>(true);
   const toggleReadOnly = () => setReadOnly((ro) => !ro);
-  const [editedDescription, setEditedDescription] = useState<string>("");
+  const [editedDescription, setEditedDescription] = useState<string>(
+    ancestry.description
+  );
 
   return (
     <Card>
@@ -40,8 +40,8 @@ const AncestryPage = ({ ancestry }) => {
           </ActionIcon>
         </Group>
         <RichTextEditor
-          value={ancestry.description}
-          readOnly
+          value={editedDescription}
+          readOnly={readOnly}
           id="description"
         />
         <Table>

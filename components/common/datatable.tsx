@@ -1,5 +1,4 @@
-import { useQuery } from "@tanstack/react-query";
-import { Center, Pagination, Stack, Table } from "@mantine/core";
+import { Center, createStyles, Pagination, Stack, Table } from "@mantine/core";
 import Link from "next/link";
 import { useState } from "react";
 
@@ -20,7 +19,14 @@ type DataTableProps = {
   rowsPerPage: number;
 };
 
+const useStyles = createStyles(() => ({
+  tablerows: {
+    cursor: 'pointer'
+  }
+}))
+
 const DataTable = ({ columns, rows, rowsPerPage = 10 }: DataTableProps) => {
+  const { classes } = useStyles();
   const [activePage, setPage] = useState(1);
 
   const headers = columns.map(({ key, value }) => (
@@ -31,7 +37,7 @@ const DataTable = ({ columns, rows, rowsPerPage = 10 }: DataTableProps) => {
     .slice(activePage * rowsPerPage - rowsPerPage, activePage * rowsPerPage)
     .map(({ href, columns: rowColumns }, i) => (
       <Link key={`row-${i}`} legacyBehavior href={href}>
-        <tr className="cursor-pointer">
+        <tr className={classes.tablerows}>
           {columns.map(({ key }, i) => (
             <td key={`row-${i}-${key}`}>
               {rowColumns.find((c) => c.key === key)?.value}

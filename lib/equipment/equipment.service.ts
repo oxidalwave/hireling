@@ -22,7 +22,7 @@ export async function getAllEquipment() {
   });
 }
 
-export async function getEquipment(id: string) {
+export async function getEquipmentById(id: string) {
   return await prisma.equipment.findUnique({
     where: { id },
     include: { source: true },

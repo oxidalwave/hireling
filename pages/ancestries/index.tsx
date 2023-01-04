@@ -1,43 +1,32 @@
 import { Alert, Group, Loader, Select, Stack } from "@mantine/core";
 import DataTable from "components/common/datatable";
+import { getAncestries } from "lib/ancestry/ancestries.service";
 import { GetAncestriesResponse } from "lib/ancestry/ancestries.types";
 import { useHireling } from "lib/hooks/useQuery";
+import { getSourcesFor } from "lib/source/source.service";
 import { useState } from "react";
 
 const rowsPerPage = 16;
 
-const AncestriesPage = ({}) => {
+export async function getServerSideProps(ctx) {
+  const ancestries: GetAncestriesResponse = await getAncestries();
+
+  const sources = await getSourcesFor("ancestries");
+
+  return {
+    props: {
+      ancestries: ancestries.map((b) => ({
+        id: b.id,
+        name: b.name,
+        source: b.source.name,
+      })),
+      sources: sources.map((s) => s.name),
+    },
+  };
+}
+
+const AncestriesPage = ({ ancestries, sources }) => {
   const [source, setSource] = useState<string | null>("");
-
-  const {
-    data: ancestriesData,
-    isLoading: isLoadingAncestries,
-    error: errorAncestries,
-  } = useHireling<GetAncestriesResponse>("ancestries", "", () => {});
-  const {
-    data: sources,
-    isLoading: isLoadingSources,
-    error: errorSources,
-  } = useHireling<{ name: string }[]>("sources", "", () => {});
-
-  if (isLoadingAncestries || isLoadingSources) {
-    return <Loader />;
-  }
-  if (errorAncestries || errorSources) {
-    return <Alert color="red">ERROR</Alert>;
-  }
-
-  if (ancestriesData === undefined) {
-    throw Error("");
-  }
-  if (sources === undefined) {
-    throw Error("");
-  }
-  const ancestries = ancestriesData.map((a) => ({
-    id: a.id,
-    name: a.name,
-    source: a.source.name,
-  }));
 
   const columns = [
     { key: "name", value: "Name" },
@@ -61,7 +50,7 @@ const AncestriesPage = ({}) => {
           label="Source"
           clearable
           searchable
-          data={sources.map((s) => s.name)}
+          data={sources}
           value={source}
           onChange={setSource}
         />

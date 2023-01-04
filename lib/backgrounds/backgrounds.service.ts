@@ -36,7 +36,7 @@ export async function getBackgrounds(
   });
 }
 
-export async function getBackground(
+export async function getBackgroundById(
   id: string
 ): Promise<GetBackgroundByIdResponse | null> {
   return await prisma.background.findUnique({
