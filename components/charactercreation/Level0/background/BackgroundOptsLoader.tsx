@@ -18,7 +18,7 @@ export default function BackgroundOptsLoader({
     setBackground(b);
   };
 
-  const { data } = trpc.ancestryById.useQuery(
+  const { data } = trpc.backgroundById.useQuery(
     { id: background.id },
     { onSuccess: resetBoosts }
   );
