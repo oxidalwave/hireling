@@ -5,6 +5,7 @@ import axios from "axios";
 import { getSegmentedControlDataFromBoosts } from "lib/boosts/boostUtils";
 import { Dispatch } from "react";
 import { NewPlayerCharacterPlayerClass } from "types/PlayerCharacter";
+import { trpc } from "utils/trpc";
 import PlayerClassOpts from "./PlayerClassOpts";
 
 export interface PlayerClassOptsProps {
@@ -16,64 +17,35 @@ export default function PlayerClassOptsLoader({
   playerClass,
   setPlayerClass,
 }: PlayerClassOptsProps) {
-  const {
-    data: playerClassData,
-    isLoading: playerClassIsLoading,
-    error: playerClassError,
-  } = useQuery({
-    queryKey: ["playerclasses", playerClass.id],
-    queryFn: () =>
-      axios
-        .get(`${process.env.NEXT_PUBLIC_URL}/api/playerclasses/${playerClass.id}`)
-        .then((r) => r.data),
-    onSuccess: (d) => {
-      console.log(d);
-      console.log(playerClass);
-      const pc = { ...playerClass };
-      pc.boosts = d.boosts.map(() => ({ id: "" }));
-      pc.feat = { id: "" };
-      setPlayerClass(pc);
-    },
-    onError: (e: Error) => {
-      showNotification({
-        title: "Could not load Player Class",
-        message: e.toString(),
-      });
-    },
-    refetchOnWindowFocus: false,
-  });
+  function updatePlayerClass(d) {
+    console.log(d);
+    console.log(playerClass);
+    const pc = { ...playerClass };
+    pc.boosts = d.boosts.map(() => ({ id: "" }));
+    pc.feat = { id: "" };
+    setPlayerClass(pc);
+  }
 
-  const {
-    data: featData,
-    isLoading: featsIsLoading,
-    error: featsError,
-  } = useQuery({
-    queryKey: ["feats", playerClassData?.name],
-    queryFn: () =>
-      axios
-        .get(
-          `${process.env.NEXT_PUBLIC_URL}/api/feats?className=${playerClassData?.name}`
-        )
-        .then((r) => r.data),
-    onError: (e: Error) => {
-      showNotification({
-        title: "Could not load Feat",
-        message: e.toString(),
-      });
-    },
-  });
+  const { data: playerClassData, isLoading: playerClassIsLoading } =
+    trpc.playerClassById.useQuery(
+      { id: playerClass.id },
+      {
+        onSuccess: updatePlayerClass,
+        onError: showNotification,
+        refetchOnWindowFocus: false,
+      }
+    );
+
+  const { data: featData, isLoading: featsIsLoading } =
+    trpc.classFeats.useQuery(
+      { className: playerClassData?.name },
+      {
+        onError: showNotification,
+      }
+    );
 
   if (playerClassIsLoading || featsIsLoading) {
     return <Loader />;
-  }
-
-  if (playerClassError) {
-    showNotification(playerClassError);
-    return <Alert color="red">Could not load Player Class</Alert>;
-  }
-  if (featsError) {
-    showNotification(featsError);
-    return <Alert color="red">Could not load Feats</Alert>;
   }
 
   if (playerClassData && featData) {

@@ -14,3 +14,6 @@ export const ancestryById = procedure
   .query(async ({ input }) => await getAncestryById(input.id));
 
 export const ancestries = procedure.query(async () => await getAncestries());
+
+const procedures = { ancestryById, ancestries };
+export default procedures;

@@ -1,5 +1,4 @@
 import { Center, Loader } from "@mantine/core";
-import BaseLoader from "components/base.loader";
 import { GetAncestryByIdResponse } from "lib/ancestry/ancestries.types";
 import { Dispatch } from "react";
 import { NewPlayerCharacterAncestry } from "types/PlayerCharacter";
