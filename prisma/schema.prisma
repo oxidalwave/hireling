@@ -6,8 +6,8 @@ generator client {
 }
 
 datasource db {
-  provider = "postgresql"
-  url      = env("DATABASE_URL")
+  provider          = "postgresql"
+  url               = env("DATABASE_URL")
   shadowDatabaseUrl = env("SHADOW_DATABASE_URL")
 }
 
@@ -89,7 +89,8 @@ model Source {
   backgrounds   Background[]
   playerClasses PlayerClass[]
   equipment     Equipment[]
-  Feat          Feat[]
+  feats         Feat[]
+  heritages     Heritage[]
 }
 
 model PlayerCharacter {
@@ -125,11 +126,22 @@ model Ancestry {
   speed           Int
   playerCharacter PlayerCharacter[]
   feats           AncestryFeat[]
+  heritages       Heritage[]
   source          Source            @relation(fields: [sourceId], references: [id])
   sourceId        String
   boosts          Boost[]
 
   @@unique([name, sourceId])
+}
+
+model Heritage {
+  id          String   @id @default(cuid())
+  name        String
+  description String
+  ancestry    Ancestry @relation(fields: [ancestryId], references: [id])
+  ancestryId  String
+  source      Source   @relation(fields: [sourceId], references: [id])
+  sourceId    String
 }
 
 model Boost {
