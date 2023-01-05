@@ -1,5 +1,5 @@
 import {
-  getAbilityScoreBoost,
+  getAbilityScoreBoostById,
   getFreeAbilityScoreBoosts,
 } from "lib/abilityScoreBoosts/abilityScoreBoosts.service";
 import { NextApiRequest, NextApiResponse } from "next";
@@ -26,7 +26,7 @@ async function handleGet(req: NextApiRequest, res: NextApiResponse) {
       const take = Number(req.query.take) ?? 4;
       abilityScoreBoost = await getFreeAbilityScoreBoosts(4);
     } else {
-      abilityScoreBoost = await getAbilityScoreBoost(id);
+      abilityScoreBoost = await getAbilityScoreBoostById(id);
     }
     res.status(200).json(abilityScoreBoost);
   } else if (id === null) {
