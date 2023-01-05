@@ -23,6 +23,8 @@ import FreeBoosts from "./Level0/FreeBoosts";
 import Ancestry from "./Level0/ancestry/Ancestry";
 import Background from "./Level0/background/Background";
 import { CreatePlayerCharacterPayload } from "lib/playercharacters/playercharacters.types";
+import { useMutation } from "@tanstack/react-query";
+import { trpc } from "utils/trpc";
 
 interface Level0Props {
   ancestries: SelectItem[];
@@ -69,30 +71,43 @@ export default function Level0({
 
   const mkPayload: () => CreatePlayerCharacterPayload = () => ({
     name: name,
-    ancestry: { connect: ancestry },
-    background: { connect: background },
-    playerClass: { connect: playerClass },
+    ancestry: { connect: { id: ancestry.id } },
+    background: { connect: { id: background.id } },
+    playerClass: { connect: { id: playerClass.id } },
     abilityScoreBoosts: {
       create: boosts.map((b) => ({
         abilityScoreBoost: {
-          connect: b,
+          connect: { id: b.id },
         },
       })),
     },
     feats: {
       create: [
-        ...ancestry.feats.map((f) => ({ feat: { connect: f } })),
-        { feat: { connect: playerClass.feat } },
+        ...ancestry.feats.map((f) => ({ feat: { connect: { id: f.id } } })),
+        { feat: { connect: { id: playerClass.feat.id } } },
       ],
     },
   });
 
   const logCharacter = () => console.log(mkPayload());
 
+  const { mutate } = useMutation(
+    async (data) =>
+      await axios
+        .post(
+          `${process.env.NEXT_PUBLIC_URL}/api/playercharacters`,
+          mkPayload()
+        )
+        .then((r) => r.data)
+  );
+
   const createCharacter = async () => {
     try {
       await axios
-        .post(`${process.env.NEXT_PUBLIC_URL}/api/playercharacters`, mkPayload())
+        .post(
+          `${process.env.NEXT_PUBLIC_URL}/api/playercharacters`,
+          mkPayload()
+        )
         .then((r) => r.data);
     } catch (e: any) {
       showNotification(e);
@@ -142,7 +157,7 @@ export default function Level0({
       {shouldValidate && !isValid ? (
         <Alert color="red">There is an unselected input.</Alert>
       ) : (
-        <Button onClick={createCharacter}>SUBMIT</Button>
+        <Button onClick={() => mutate()}>SUBMIT</Button>
       )}
     </Stack>
   );

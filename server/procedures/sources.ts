@@ -5,9 +5,10 @@ import {
   getSources,
   getSourceByName,
   getSourcesFor,
+  updateSource,
 } from "lib/source/source.service";
 
-export const sourceById = procedure
+const sourceById = procedure
   .input(
     z.object({
       id: z.string(),
@@ -15,9 +16,9 @@ export const sourceById = procedure
   )
   .query(async ({ input }) => await getSourceById(input.id));
 
-export const sources = procedure.query(async () => await getSources());
+const sources = procedure.query(async () => await getSources());
 
-export const sourceByName = procedure
+const sourceByName = procedure
   .input(
     z.object({
       name: z.string(),
@@ -25,10 +26,22 @@ export const sourceByName = procedure
   )
   .query(async ({ input }) => await getSourceByName(input.name));
 
-export const sourcesFor = procedure
+const sourcesFor = procedure
   .input(
     z.object({
       resourseKind: z.string(),
     })
   )
   .query(async ({ input }) => await getSourcesFor(input.resourseKind));
+
+const updateSourceById = procedure
+  .input(
+    z.object({
+      id: z.string(),
+      name: z.string(),
+    })
+  )
+  .mutation(async ({ input }) => await updateSource(input.id, input.name));
+
+const procedures = { sourceById, sources, sourceByName, sourcesFor };
+export default procedures;

@@ -8,16 +8,12 @@ import {
 import { boostById, boosts, boostsFree } from "server/procedures/boosts";
 import { equipment, equipmentById } from "server/procedures/equipment";
 import { featById, feats, classFeats } from "server/procedures/feats";
-import {
-  sourceById,
-  sourceByName,
-  sources,
-  sourcesFor,
-} from "server/procedures/sources";
+import sources from "server/procedures/sources";
 import {
   playerClassById,
   playerClasses,
 } from "server/procedures/playerClasses";
+import playerCharacters from "server/procedures/playerCharacters";
 
 export const appRouter = router({
   ...ancestryProcedures,
@@ -35,10 +31,8 @@ export const appRouter = router({
   classFeats,
   playerClassById,
   playerClasses,
-  sourceById,
-  sourceByName,
-  sources,
-  sourcesFor,
+  ...sources,
+  ...playerCharacters,
 });
 // export type definition of API
 export type AppRouter = typeof appRouter;
