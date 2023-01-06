@@ -1,6 +1,5 @@
 import { Hero } from "components/home/Hero";
-import { createStyles, Text } from "@mantine/core";
-import Head from "next/head";
+import { createStyles, Stack, Text } from "@mantine/core";
 
 const useStyles = createStyles((theme) => ({
   wrapper: {
@@ -95,33 +94,19 @@ const useStyles = createStyles((theme) => ({
 export default function Home() {
   const { classes } = useStyles();
   const mainText = (
-    <>
+    <Stack>
       <Text component="span" inherit>
         A Searchable Compendium for
-      </Text>{" "}
+      </Text>
       <Text component="span" className={classes.highlight} inherit>
         Pathfinder 2nd Edition
       </Text>
-    </>
+    </Stack>
   );
 
   const subText = (
     <Text size="lg" color="dimmed" className={classes.description}></Text>
   );
 
-  return (
-    <div>
-      <Head>
-        <title>Hireling</title>
-        <meta name="description" content="Compendium for Pathfinder 2e" />
-        <link rel="icon" href="public/favicon.ico" />
-      </Head>
-
-      <main>
-        <Hero mainText={mainText} subText={subText} />
-      </main>
-
-      <footer></footer>
-    </div>
-  );
+  return <Hero mainText={mainText} subText={subText} />;
 }

@@ -107,20 +107,6 @@ export function Hero({ mainText, subText }) {
         <Container p={0} size={600}>
           {subText}
         </Container>
-
-        <div className={classes.controls}>
-          <Button
-            className={classes.control}
-            size="lg"
-            variant="default"
-            color="gray"
-          >
-            Ancestries
-          </Button>
-          <Button className={classes.control} size="lg">
-            Backgrounds
-          </Button>
-        </div>
       </div>
     </Container>
   );

@@ -11,6 +11,7 @@ import { useRouter } from "next/router";
 import { SessionProvider } from "next-auth/react";
 import Shell from "components/common/nav/shell";
 import { trpc } from "../utils/trpc";
+import Head from "next/head";
 
 const queryClient = new QueryClient();
 
@@ -27,9 +28,24 @@ function App({ Component, pageProps: { session, ...pageProps } }: AppProps) {
       <SessionProvider session={session}>
         <QueryClientProvider client={queryClient}>
           <NotificationsProvider>
-            <Shell path={path} >
-              <Component {...pageProps} />
-            </Shell>
+            <div>
+              <Head>
+                <title>Hireling</title>
+                <meta
+                  name="description"
+                  content="Compendium for Pathfinder 2e"
+                />
+                <link rel="icon" href="public/favicon.ico" />
+              </Head>
+
+              <main>
+                <Shell path={path}>
+                  <Component {...pageProps} />
+                </Shell>
+              </main>
+
+              <footer></footer>
+            </div>
           </NotificationsProvider>
           <ReactQueryDevtools initialIsOpen={false} />
         </QueryClientProvider>
