@@ -14,6 +14,7 @@ import {
   playerClasses,
 } from "server/procedures/playerClasses";
 import playerCharacters from "server/procedures/playerCharacters";
+import messageProcedures from "server/procedures/chat";
 
 export const appRouter = router({
   ...ancestryProcedures,
@@ -33,6 +34,7 @@ export const appRouter = router({
   playerClasses,
   ...sources,
   ...playerCharacters,
+  ...messageProcedures,
 });
 // export type definition of API
 export type AppRouter = typeof appRouter;

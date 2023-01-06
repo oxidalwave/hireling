@@ -47,6 +47,7 @@ model User {
   accounts      Account[]
   sessions      Session[]
   characters    PlayerCharacter[]
+  messages      Message[]
 }
 
 model VerificationToken {
@@ -55,6 +56,13 @@ model VerificationToken {
   expires    DateTime
 
   @@unique([identifier, token])
+}
+
+model Message {
+  id      String @id @default(cuid())
+  user    User   @relation(fields: [userId], references: [id])
+  message String
+  userId  String
 }
 
 model AbilityScore {
