@@ -7,7 +7,6 @@ import {
   SelectItem,
 } from "@mantine/core";
 import { useState } from "react";
-import { useSession } from "next-auth/react";
 import PlayerClass from "./Level0/playerclass/PlayerClass";
 import AbilityScores from "./Level0/AbilityScores";
 import axios from "axios";
