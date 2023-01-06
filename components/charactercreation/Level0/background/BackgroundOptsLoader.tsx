@@ -1,5 +1,6 @@
-import BaseLoader from "components/base.loader";
+import { Center, Loader } from "@mantine/core";
 import { GetBackgroundByIdResponse } from "lib/backgrounds/backgrounds.types";
+import { trpc } from "utils/trpc";
 import BackgroundOpts from "./BackgroundOpts";
 
 interface BackgroundOptsLoaderProps {
@@ -17,19 +18,24 @@ export default function BackgroundOptsLoader({
     setBackground(b);
   };
 
+  const { data } = trpc.backgroundById.useQuery(
+    { id: background.id },
+    { onSuccess: resetBoosts }
+  );
+
+  if (!data) {
+    return (
+      <Center>
+        <Loader />
+      </Center>
+    );
+  }
+
   return (
-    <BaseLoader
-      resourceKind="backgrounds"
-      id={background.id}
-      onSuccess={resetBoosts}
-    >
-      {(d) => (
-        <BackgroundOpts
-          background={background}
-          setBackground={setBackground}
-          data={d}
-        />
-      )}
-    </BaseLoader>
+    <BackgroundOpts
+      background={background}
+      setBackground={setBackground}
+      data={data}
+    />
   );
 }

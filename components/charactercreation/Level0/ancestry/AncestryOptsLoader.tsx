@@ -1,7 +1,8 @@
-import BaseLoader from "components/base.loader";
+import { Center, Loader } from "@mantine/core";
 import { GetAncestryByIdResponse } from "lib/ancestry/ancestries.types";
 import { Dispatch } from "react";
 import { NewPlayerCharacterAncestry } from "types/PlayerCharacter";
+import { trpc } from "utils/trpc";
 import AncestryOpts from "./AncestryOpts";
 
 interface AncestryOptsLoaderProps {
@@ -21,15 +22,20 @@ export default function AncestryOptsLoader({
     setAncestry(a);
   };
 
+  const { data } = trpc.ancestryById.useQuery(
+    { id: ancestry.id },
+    { onSuccess: resetFeatAndBoosts }
+  );
+
+  if (!data) {
+    return (
+      <Center>
+        <Loader />
+      </Center>
+    );
+  }
+
   return (
-    <BaseLoader
-      resourceKind="ancestries"
-      id={ancestry.id}
-      onSuccess={resetFeatAndBoosts}
-    >
-      {(d) => (
-        <AncestryOpts ancestry={ancestry} setAncestry={setAncestry} data={d} />
-      )}
-    </BaseLoader>
+    <AncestryOpts ancestry={ancestry} setAncestry={setAncestry} data={data} />
   );
 }

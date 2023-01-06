@@ -8,8 +8,8 @@ import {
 } from "@mantine/core";
 import { useQueries } from "@tanstack/react-query";
 import axios from "axios";
-import { relative } from "path";
 import { ResourceById } from "types/PlayerCharacter";
+import { trpc } from "utils/trpc";
 
 type AbilityScoresArray = {
   str: number;
@@ -27,17 +27,11 @@ type AbilityScoresProps = {
 const AbilityScores = ({ boosts }: AbilityScoresProps) => {
   console.log(boosts);
 
-  const results = useQueries({
-    queries: boosts
-      .filter(({ id }) => id !== "")
-      .map(({ id }) => ({
-        queryFn: () =>
-          axios
-            .get(`${process.env.NEXT_PUBLIC_URL}/api/abilityscoreboosts/${id}`)
-            .then((r) => r.data),
-        queryKey: ["boost", id],
-      })),
-  });
+  const definedBoosts = boosts.filter(({ id }) => id !== "");
+
+  const results = trpc.useQueries((t) =>
+    definedBoosts.map(({ id }) => t.abilityScoreBoostById({ id }))
+  );
 
   if (results.find((r) => r.isLoading)) {
     return (

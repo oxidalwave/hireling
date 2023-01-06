@@ -22,13 +22,11 @@ import getConfig from "next/config";
 import { useRouter } from "next/router";
 import { SessionProvider } from "next-auth/react";
 import Shell from "components/common/nav/shell";
+import { trpc } from "../utils/trpc";
 
 const queryClient = new QueryClient();
 
-export default function App({
-  Component,
-  pageProps: { session, ...pageProps },
-}: AppProps) {
+function App({ Component, pageProps: { session, ...pageProps } }: AppProps) {
   const { publicRuntimeConfig } = getConfig();
   axios.defaults.baseURL = `${process.env.NEXT_PUBLIC_URL}/api`; // TODO: Why isn't this working with the runtime config
 
@@ -111,3 +109,5 @@ export default function App({
     </MantineProvider>
   );
 }
+
+export default trpc.withTRPC(App);

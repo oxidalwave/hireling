@@ -25,6 +25,10 @@ export async function addSource(name: string): Promise<Source> {
   return await prisma.source.create({ data: { name } });
 }
 
+export async function updateSource(id: string, name: string): Promise<Source> {
+  return await prisma.source.update({ where: { id }, data: { name } });
+}
+
 export async function getSourceOrAdd(name: string): Promise<Source> {
   return await prisma.source.upsert({
     where: { name },

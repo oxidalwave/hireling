@@ -4,6 +4,7 @@ import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
 import { Dispatch } from "react";
 import { ResourceById } from "types/PlayerCharacter";
+import { trpc } from "utils/trpc";
 import Boost from "./Boost";
 
 export interface FreeBoostsProps {
@@ -13,24 +14,10 @@ export interface FreeBoostsProps {
 }
 
 export default function FreeBoosts({ boosts, setBoosts, count = 4 }) {
-  const { data, isLoading, error } = useQuery({
-    queryFn: () =>
-      axios
-        .get(`${process.env.NEXT_PUBLIC_URL}/api/boosts/free?take=${count}`)
-        .then((r) => r.data),
-    queryKey: ["boost", "free"],
-    onSuccess: (d) => {
-      console.log(d);
-      setBoosts(d.map(() => ({ id: "" })));
-    },
-    onError: (e: Error) => {
-      showNotification({
-        title: "Could not load Boosts",
-        message: e.toString(),
-      });
-    },
-    refetchOnWindowFocus: false,
-  });
+  const resetBoosts = (d) => {
+    console.log(d);
+    setBoosts(d.map(() => ({ id: "" })));
+  };
 
   const updateBoost = (i: number) => (a: string) => {
     let b = [...boosts];
@@ -38,12 +25,13 @@ export default function FreeBoosts({ boosts, setBoosts, count = 4 }) {
     setBoosts(b);
   };
 
-  if (isLoading) {
-    return <Loader />;
-  }
+  const { data } = trpc.boostsFree.useQuery(
+    { count },
+    { onSuccess: resetBoosts, onError: showNotification }
+  );
 
-  if (error) {
-    return <Alert color="red">{error.toString()}</Alert>;
+  if (!data) {
+    return <Loader />;
   }
 
   const d = data.map((b, i) =>
