@@ -79,7 +79,7 @@ function App({ Component, pageProps: { session, ...pageProps } }: AppProps) {
       text: "Player Classes",
       href: "/playerclasses",
     },
-    {
+    /*{
       icon: (
         <ThemeIcon variant="outline" color="blue">
           <IconUser />
@@ -87,7 +87,7 @@ function App({ Component, pageProps: { session, ...pageProps } }: AppProps) {
       ),
       text: "Player Characters",
       href: "/playercharacters",
-    },
+    },*/
   ];
 
   return (

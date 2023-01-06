@@ -3,7 +3,7 @@ import { procedure } from "server/trpc";
 import { z } from "zod";
 import { EventEmitter } from "events";
 import { observable } from "@trpc/server/observable";
-import { Message, Prisma } from "@prisma/client";
+import { Prisma } from "@prisma/client";
 
 const ee = new EventEmitter();
 
