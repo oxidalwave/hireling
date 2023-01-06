@@ -1,6 +1,6 @@
 import { Group, Select, Stack } from "@mantine/core";
 import DataTable from "components/common/datatable";
-import { getAncestries } from "lib/ancestry/ancestries.service";
+import { getAllAncestries } from "lib/ancestry/ancestries.service";
 import { GetAncestriesResponse } from "lib/ancestry/ancestries.types";
 import { getSourcesFor } from "lib/source/source.service";
 import { useState } from "react";
@@ -8,7 +8,7 @@ import { useState } from "react";
 const rowsPerPage = 16;
 
 export async function getServerSideProps(ctx) {
-  const ancestries: GetAncestriesResponse = await getAncestries();
+  const ancestries: GetAncestriesResponse = await getAllAncestries();
 
   const sources = await getSourcesFor("ancestries");
 
@@ -24,7 +24,7 @@ export async function getServerSideProps(ctx) {
   };
 }
 
-const AncestriesPage = ({ ancestries, sources }) => {
+export default function AncestriesPage({ ancestries, sources }) {
   const [source, setSource] = useState<string | null>("");
 
   const columns = [
@@ -57,6 +57,4 @@ const AncestriesPage = ({ ancestries, sources }) => {
       <DataTable columns={columns} rows={rowData} rowsPerPage={rowsPerPage} />
     </Stack>
   );
-};
-
-export default AncestriesPage;
+}

@@ -13,7 +13,7 @@ export async function getServerSideProps(ctx) {
   };
 }
 
-const EquipmentPage = ({ equipment }) => {
+export default function EquipmentPage({ equipment }) {
   return (
     <Card>
       <Stack>
@@ -27,6 +27,4 @@ const EquipmentPage = ({ equipment }) => {
       </Stack>
     </Card>
   );
-};
-
-export default EquipmentPage;
+}

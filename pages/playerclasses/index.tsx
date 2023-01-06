@@ -21,7 +21,7 @@ export async function getServerSideProps(ctx) {
   };
 }
 
-const PlayerClassesPage = ({ playerclasses, sources }) => {
+export default function PlayerClassesPage({ playerclasses, sources }) {
   const [source, setSource] = useState<string | null>("");
 
   const rowCount = 20;
@@ -56,6 +56,4 @@ const PlayerClassesPage = ({ playerclasses, sources }) => {
       <DataTable columns={columns} rows={rowData} rowsPerPage={rowCount} />
     </Stack>
   );
-};
-
-export default PlayerClassesPage;
+}

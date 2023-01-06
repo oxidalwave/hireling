@@ -1,7 +1,7 @@
 import { z } from "zod";
 import { procedure } from "server/trpc";
 import {
-  getAncestries,
+  getAllAncestries,
   getAncestryById,
 } from "lib/ancestry/ancestries.service";
 
@@ -13,7 +13,7 @@ export const ancestryById = procedure
   )
   .query(async ({ input }) => await getAncestryById(input.id));
 
-export const ancestries = procedure.query(async () => await getAncestries());
+export const ancestries = procedure.query(async () => await getAllAncestries());
 
 const procedures = { ancestryById, ancestries };
 export default procedures;

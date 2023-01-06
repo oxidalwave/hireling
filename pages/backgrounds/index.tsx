@@ -23,7 +23,7 @@ export async function getServerSideProps(ctx) {
   };
 }
 
-const BackgroundsPage = ({ backgrounds, sources }) => {
+export default function BackgroundsPage({ backgrounds, sources }) {
   const [source, setSource] = useState<string | null>("");
 
   const columns = [
@@ -56,6 +56,4 @@ const BackgroundsPage = ({ backgrounds, sources }) => {
       <DataTable columns={columns} rows={rowData} rowsPerPage={rowsPerPage} />
     </Stack>
   );
-};
-
-export default BackgroundsPage;
+}

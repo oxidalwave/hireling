@@ -1,7 +1,9 @@
-import { Prisma } from "@prisma/client";
 import prisma from "lib/prisma";
+import { AbilityScoreBoost } from "./abilityScoreBoosts.types";
 
-export async function getAbilityScoreBoostById(id: string) {
+export async function getAbilityScoreBoostById(
+  id: string
+): Promise<AbilityScoreBoost | null> {
   return await prisma.abilityScoreBoost.findUnique({
     where: { id },
     include: {
@@ -11,11 +13,15 @@ export async function getAbilityScoreBoostById(id: string) {
   });
 }
 
-export async function getFreeAbilityScoreBoosts(take: number): Promise<
-  Prisma.AbilityScoreBoostGetPayload<{
-    include: { boost: true; abilityScore: true };
-  }>[]
-> {
+export async function getAllAbilityScores(): Promise<AbilityScoreBoost[]> {
+  return await prisma.abilityScoreBoost.findMany({
+    include: { boost: true, abilityScore: true },
+  });
+}
+
+export async function getFreeAbilityScoreBoosts(
+  take: number
+): Promise<AbilityScoreBoost[]> {
   return await prisma.abilityScoreBoost.findMany({
     where: { boost: { kind: "FREE" } },
     take,

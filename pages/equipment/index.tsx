@@ -23,7 +23,7 @@ export async function getServerSideProps(ctx) {
   };
 }
 
-const EquipmentPage = ({ equipment, sources }) => {
+export default function EquipmentPage({ equipment, sources }) {
   const [source, setSource] = useState<string | null>("");
 
   const columns = [
@@ -56,6 +56,4 @@ const EquipmentPage = ({ equipment, sources }) => {
       <DataTable columns={columns} rows={rowData} rowsPerPage={rowsPerPage} />
     </Stack>
   );
-};
-
-export default EquipmentPage;
+}

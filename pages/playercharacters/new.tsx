@@ -4,13 +4,13 @@ import Level1 from "components/charactercreation/Level1";
 import Level2 from "components/charactercreation/Level2";
 import Level3 from "components/charactercreation/Level3";
 import { entityToSelectItem } from "lib/entityToSelectItem";
-import { getAncestries } from "lib/ancestry/ancestries.service";
+import { getAllAncestries } from "lib/ancestry/ancestries.service";
 import { getBackgrounds } from "lib/backgrounds/backgrounds.service";
 import { getPlayerClasses } from "lib/playerclasses/playerclasses.service";
 
 export async function getServerSideProps(ctx) {
   const [ancestries, backgrounds, playerClasses] = await Promise.all([
-    getAncestries(),
+    getAllAncestries(),
     getBackgrounds(),
     getPlayerClasses(),
   ]);

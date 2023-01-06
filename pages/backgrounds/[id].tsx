@@ -1,9 +1,5 @@
-import { useRouter } from "next/router";
-import { ActionIcon, Card, Group, Stack, Text, Title } from "@mantine/core";
+import { Card, Stack, Text, Title } from "@mantine/core";
 import { RichTextEditor } from "components/RichTextEditor";
-import { useState } from "react";
-import { IconPencil } from "@tabler/icons";
-import axios from "axios";
 import { getBackgroundById } from "lib/backgrounds/backgrounds.service";
 import { GetBackgroundByIdResponse } from "lib/backgrounds/backgrounds.types";
 
@@ -20,46 +16,18 @@ export async function getServerSideProps(ctx) {
   };
 }
 
-const BackgroundPage = ({ background }) => {
-  const router = useRouter();
-  const { id } = router.query;
-
-  const [readOnly, setReadOnly] = useState<boolean>(true);
-
-  const [editedDescription, setEditedDescription] = useState<string>(
-    background.description
-  );
-
-  const toggleReadOnly = async () => {
-    if (!readOnly) {
-      await axios.put(`backgrounds/${id}`, {
-        ...background,
-        source: background.source.name,
-        description: editedDescription,
-      });
-    }
-    setReadOnly((ro) => !ro);
-  };
-
+export default function BackgroundPage({ background }) {
   return (
     <Card>
       <Stack>
-        <Group position="apart">
-          <Title order={2}>{background.name}</Title>
-          <ActionIcon variant="outline" onClick={toggleReadOnly}>
-            <IconPencil />
-          </ActionIcon>
-        </Group>
+        <Title order={2}>{background.name}</Title>
         <RichTextEditor
-          value={editedDescription}
-          onChange={setEditedDescription}
-          readOnly={readOnly}
+          value={background.description}
+          readOnly={true}
           id="description"
         />
         <Text ta="right">{background.source.name}</Text>
       </Stack>
     </Card>
   );
-};
-
-export default BackgroundPage;
+}

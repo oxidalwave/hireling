@@ -1,15 +1,5 @@
-import {
-  ActionIcon,
-  Card,
-  Group,
-  Stack,
-  Table,
-  Text,
-  Title,
-} from "@mantine/core";
+import { Card, Stack, Table, Text, Title } from "@mantine/core";
 import { RichTextEditor } from "components/RichTextEditor";
-import { useState } from "react";
-import { IconPencil } from "@tabler/icons";
 import { getAncestryById } from "lib/ancestry/ancestries.service";
 
 export async function getServerSideProps(ctx) {
@@ -23,25 +13,14 @@ export async function getServerSideProps(ctx) {
   };
 }
 
-const AncestryPage = ({ ancestry }) => {
-  const [readOnly, setReadOnly] = useState<boolean>(true);
-  const toggleReadOnly = () => setReadOnly((ro) => !ro);
-  const [editedDescription, setEditedDescription] = useState<string>(
-    ancestry.description
-  );
-
+export default function AncestryPage({ ancestry }) {
   return (
     <Card>
       <Stack>
-        <Group position="apart">
-          <Title order={2}>{ancestry.name}</Title>
-          <ActionIcon variant="outline" onClick={toggleReadOnly}>
-            <IconPencil />
-          </ActionIcon>
-        </Group>
+        <Title order={2}>{ancestry.name}</Title>
         <RichTextEditor
-          value={editedDescription}
-          readOnly={readOnly}
+          value={ancestry.description}
+          readOnly={true}
           id="description"
         />
         <Table>
@@ -65,6 +44,4 @@ const AncestryPage = ({ ancestry }) => {
       </Stack>
     </Card>
   );
-};
-
-export default AncestryPage;
+}

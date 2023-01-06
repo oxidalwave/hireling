@@ -5,7 +5,6 @@ import {
   getSources,
   getSourceByName,
   getSourcesFor,
-  updateSource,
 } from "lib/source/source.service";
 
 const sourceById = procedure
@@ -33,15 +32,6 @@ const sourcesFor = procedure
     })
   )
   .query(async ({ input }) => await getSourcesFor(input.resourseKind));
-
-const updateSourceById = procedure
-  .input(
-    z.object({
-      id: z.string(),
-      name: z.string(),
-    })
-  )
-  .mutation(async ({ input }) => await updateSource(input.id, input.name));
 
 const procedures = { sourceById, sources, sourceByName, sourcesFor };
 export default procedures;
