@@ -1,6 +1,10 @@
 import prisma from "lib/prisma";
 import { procedure } from "server/trpc";
 import { z } from "zod";
+import { EventEmitter } from "events";
+import { observable } from "@trpc/server/observable";
+
+const ee = new EventEmitter();
 
 interface ChatMessage {
   user: string;
@@ -37,18 +41,36 @@ const addMessage = procedure
     })
   )
   .mutation(
-    async ({ input }) =>
-      await prisma.message.create({
+    async ({ input }) => {
+      const message = await prisma.message.create({
         data: {
           message: input.message,
           user: { connect: { email: input.email } },
         },
-      })
+      });
+      ee.emit('add', message)
+    }
   );
+
+  const onAdd = procedure
+    .subscription(() => {
+      return observable<ChatMessage>((emit) => {
+        const onAdd = (d: ChatMessage) => {
+          emit.next(d);
+        }
+
+        ee.on('add', onAdd);
+
+        return () => {
+          ee.off('add', onAdd);
+        }
+      })
+    })
 
 const messageProcedures = {
   getRecentMessages,
   addMessage,
+  onAdd
 };
 
 export default messageProcedures;
