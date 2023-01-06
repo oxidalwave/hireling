@@ -2,7 +2,7 @@ import { PrismaClient } from "@prisma/client";
 const prisma = new PrismaClient();
 
 async function initAbilityScores() {
-  const abilityScores = require("./prisma/data/abilityScores.js");
+  const abilityScores = require("./data/abilityScores.js").default;
 
   for (const abilityScore of abilityScores) {
     await prisma.abilityScore.create({
@@ -27,7 +27,7 @@ async function initAbilityScores() {
 }
 
 async function initSkills() {
-  const skills = require("./prisma/data/skills.js");
+  const skills = require("./data/skills.js").default;
 
   for (const skill of skills) {
     await prisma.skill.create({
@@ -37,7 +37,7 @@ async function initSkills() {
 }
 
 async function initEquipment() {
-  const allEquipment = require("./prisma/data/equipment.js");
+  const allEquipment = require("./data/equipment.js").default;
 
   for (const equipment of allEquipment.results) {
     await prisma.equipment.create({
@@ -56,7 +56,7 @@ async function initEquipment() {
 }
 
 async function loadFeats() {
-  return require("./prisma/data/feats.js");
+  return require("./data/feats.js").default;
 }
 async function initFeats() {
   const allFeats = await loadFeats();
@@ -80,7 +80,7 @@ async function initFeats() {
 }
 
 async function initAncestries() {
-  const ancestries = require("./prisma/data/ancestries.js");
+  const ancestries = require("./data/ancestries.js").default;
   const allFeats = await loadFeats();
   for (const ancestry of ancestries.results) {
     const feats = allFeats.filter(
@@ -192,7 +192,7 @@ async function initHeritages() {
 }
 
 async function initBackgrounds() {
-  const backgrounds = require("./prisma/data/backgrounds.js").default;
+  const backgrounds = require("./data/backgrounds.js").default;
   for (const background of backgrounds) {
     const apiBoosts: { value: string[] }[] = background?.system?.boosts ?? [];
     const boosts: string[][] = Object.values(apiBoosts).map(
@@ -244,7 +244,7 @@ async function initBackgrounds() {
 }
 
 async function initPlayerClasses() {
-  const playerClasses = require("./prisma/data/playerClasses.js").default;
+  const playerClasses = require("./data/playerClasses.js").default;
   const allFeats = await loadFeats();
   for (const playerClass of playerClasses) {
     let keyAbilities: string[] = playerClass.system.keyAbility.value;
@@ -301,14 +301,14 @@ async function initPlayerClasses() {
 }
 
 async function main() {
-  //await initAbilityScores();
-  //await initSkills();
-  //await initEquipment();
-  //await initFeats();
-  //await initAncestries();
+  await initAbilityScores();
+  await initSkills();
+  await initEquipment();
+  await initFeats();
+  await initAncestries();
   await initHeritages();
-  //await initBackgrounds();
-  //await initPlayerClasses();
+  await initBackgrounds();
+  await initPlayerClasses();
 }
 
 main()
