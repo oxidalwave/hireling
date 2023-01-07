@@ -41,6 +41,7 @@ export default function PlayerClassOptsLoader({
       { className: playerClassData?.name },
       {
         onError: showNotification,
+        refetchOnWindowFocus: false,
       }
     );
 

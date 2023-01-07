@@ -20,7 +20,7 @@ export default function BackgroundOptsLoader({
 
   const { data } = trpc.backgroundById.useQuery(
     { id: background.id },
-    { onSuccess: resetBoosts }
+    { onSuccess: resetBoosts, refetchOnWindowFocus: false }
   );
 
   if (!data) {

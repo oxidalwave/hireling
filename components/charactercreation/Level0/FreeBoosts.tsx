@@ -27,7 +27,11 @@ export default function FreeBoosts({ boosts, setBoosts, count = 4 }) {
 
   const { data } = trpc.boostsFree.useQuery(
     { count },
-    { onSuccess: resetBoosts, onError: showNotification }
+    {
+      onSuccess: resetBoosts,
+      onError: showNotification,
+      refetchOnWindowFocus: false,
+    }
   );
 
   if (!data) {

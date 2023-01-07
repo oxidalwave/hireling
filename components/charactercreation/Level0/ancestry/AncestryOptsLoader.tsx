@@ -24,7 +24,7 @@ export default function AncestryOptsLoader({
 
   const { data } = trpc.ancestryById.useQuery(
     { id: ancestry.id },
-    { onSuccess: resetFeatAndBoosts }
+    { onSuccess: resetFeatAndBoosts, refetchOnWindowFocus: false }
   );
 
   if (!data) {

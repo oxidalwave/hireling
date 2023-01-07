@@ -68,7 +68,7 @@ export default function Level0({
     ...playerClass.boosts,
   ];
 
-  const mkPayload: () => CreatePlayerCharacterPayload = () => ({
+  const mkPayload = () => ({
     name: name,
     ancestry: { connect: { id: ancestry.id } },
     background: { connect: { id: background.id } },
@@ -88,29 +88,12 @@ export default function Level0({
     },
   });
 
-  const logCharacter = () => console.log(mkPayload());
+  const { mutate } = trpc.createPlayerCharacterLEGACY.useMutation();
 
-  const { mutate } = useMutation(
-    async (data) =>
-      await axios
-        .post(
-          `${process.env.NEXT_PUBLIC_URL}/api/playercharacters`,
-          mkPayload()
-        )
-        .then((r) => r.data)
-  );
-
-  const createCharacter = async () => {
-    try {
-      await axios
-        .post(
-          `${process.env.NEXT_PUBLIC_URL}/api/playercharacters`,
-          mkPayload()
-        )
-        .then((r) => r.data);
-    } catch (e: any) {
-      showNotification(e);
-    }
+  const createCharacter = () => {
+    const payload = mkPayload();
+    console.log(payload)
+    mutate(payload);
   };
 
   const shouldValidate = true;
@@ -156,7 +139,7 @@ export default function Level0({
       {shouldValidate && !isValid ? (
         <Alert color="red">There is an unselected input.</Alert>
       ) : (
-        <Button onClick={() => mutate()}>SUBMIT</Button>
+        <Button onClick={createCharacter}>SUBMIT</Button>
       )}
     </Stack>
   );

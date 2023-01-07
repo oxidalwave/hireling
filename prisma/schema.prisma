@@ -106,12 +106,12 @@ model PlayerCharacter {
   name               String
   user               User                               @relation(fields: [userId], references: [id])
   userId             String
-  ancestry           Ancestry                           @relation(fields: [ancestryId], references: [id])
-  background         Background                         @relation(fields: [backgroundId], references: [id])
-  playerClass        PlayerClass                        @relation(fields: [playerClassId], references: [id])
-  ancestryId         String
-  backgroundId       String
-  playerClassId      String
+  ancestry           Ancestry?                          @relation(fields: [ancestryId], references: [id])
+  background         Background?                        @relation(fields: [backgroundId], references: [id])
+  playerClass        PlayerClass?                       @relation(fields: [playerClassId], references: [id])
+  ancestryId         String?
+  backgroundId       String?
+  playerClassId      String?
   abilityScoreBoosts PlayerCharacterAbilityScoreBoost[]
   feats              PlayerCharacterFeat[]
 }
