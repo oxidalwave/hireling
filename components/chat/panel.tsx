@@ -29,12 +29,22 @@ export default function ChatPanel({}) {
   }
 
   const postMessage = () => {
-    mutate({ message, email: session?.user?.email ?? '' }, { onSuccess: () => refetch() });
+    mutate(
+      { message, email: session?.user?.email ?? "" },
+      { onSuccess: () => refetch() }
+    );
+  };
+
+  const handleKeyDown = (e) => {
+    if (e.key === "Enter") {
+      postMessage();
+      setMessage('')
+    }
   };
 
   return (
-    <Stack>
-      <ScrollArea.Autosize maxHeight="calc(100vh - 160px)">
+    <div className="flex flex-col h-full">
+      <div className="grow pb-2 overflow-y-auto">
         <Stack justify="start">
           {data.map(({ user, message }, i) =>
             user.email === session?.user?.email ? (
@@ -50,18 +60,25 @@ export default function ChatPanel({}) {
             )
           )}
         </Stack>
-      </ScrollArea.Autosize>
-      <Group position="apart">
-        <TextInput
-          placeholder="Message"
-          value={message}
-          onChange={(e) => setMessage(e.currentTarget.value)}
-          disabled={!session}
-        />
-        <ActionIcon onClick={postMessage} disabled={!session}>
-          <IconSend size={16} />
-        </ActionIcon>
-      </Group>
-    </Stack>
+      </div>
+      <div className="pt-2">
+        <div className="flex">
+          <div className="grow">
+            <TextInput
+              placeholder="Message"
+              value={message}
+              onChange={(e) => setMessage(e.currentTarget.value)}
+              onKeyDown={handleKeyDown}
+              disabled={!session}
+            />
+          </div>
+          <div className="pt-1 pl-2">
+            <ActionIcon onClick={postMessage} disabled={!session}>
+              <IconSend size={20} />
+            </ActionIcon>
+          </div>
+        </div>
+      </div>
+    </div>
   );
 }

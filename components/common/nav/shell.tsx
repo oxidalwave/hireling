@@ -82,6 +82,23 @@ export default function Shell({ children, path }) {
         ]
       : []),
   ];
+
+  const footerPages = [
+    ...(session?.user?.email === "ironoxide42@gmail.com"
+      ? [
+          {
+            icon: (
+              <ThemeIcon variant="outline" color="blue">
+                <IconUser />
+              </ThemeIcon>
+            ),
+            text: session.user.email,
+            href: "/",
+          },
+        ]
+      : []),
+  ];
+
   return (
     <AppShell
       header={<AppBar drawer={drawer} setDrawer={setDrawer} />}
@@ -91,7 +108,7 @@ export default function Shell({ children, path }) {
       <Stack>
         <Breadcrumb path={path} />
         <Divider />
-        {children}
+        <div className="h-full">{children}</div>
       </Stack>
     </AppShell>
   );
