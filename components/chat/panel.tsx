@@ -1,10 +1,6 @@
 import {
   ActionIcon,
-  Box,
-  Group,
   LoadingOverlay,
-  ScrollArea,
-  Stack,
   TextInput,
 } from "@mantine/core";
 import { IconSend } from "@tabler/icons";
@@ -20,11 +16,9 @@ export default function ChatPanel({}) {
 
   if (!data) {
     return (
-      <Stack>
-        <Box sx={{ maxHeight: "calc(100vh - 160px)" }}>
-          <LoadingOverlay visible={true} overlayBlur={2} />
-        </Box>
-      </Stack>
+      <div className="h-full">
+        <LoadingOverlay visible={true} overlayBlur={2} />
+      </div>
     );
   }
 
@@ -38,28 +32,34 @@ export default function ChatPanel({}) {
   const handleKeyDown = (e) => {
     if (e.key === "Enter") {
       postMessage();
-      setMessage('')
+      setMessage("");
     }
   };
 
   return (
     <div className="flex flex-col h-full">
       <div className="grow pb-2 overflow-y-auto">
-        <Stack justify="start">
+        <div className="flex flex-col justify-start">
           {data.map(({ user, message }, i) =>
             user.email === session?.user?.email ? (
-              <div key={i} className="bg-sky-900 rounded-xl rounded-br-sm p-2">
+              <div
+                key={i}
+                className="bg-sky-900 rounded-xl rounded-br-sm p-2 m-2"
+              >
                 <div className="text-sky-200">{user.email}</div>
                 <div className="text-white">{message}</div>
               </div>
             ) : (
-              <div key={i} className="bg-sky-700 rounded-xl rounded-tl-sm p-2">
+              <div
+                key={i}
+                className="bg-sky-700 rounded-xl rounded-tl-sm p-2 m-2"
+              >
                 <div className="text-sky-200">{user.email}</div>
                 <div className="text-white">{message}</div>
               </div>
             )
           )}
-        </Stack>
+        </div>
       </div>
       <div className="pt-2">
         <div className="flex">
