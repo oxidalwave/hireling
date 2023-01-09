@@ -17,6 +17,7 @@ import {
   IconUser,
 } from "@tabler/icons";
 import { useSession } from "next-auth/react";
+import ChatPanel from "components/chat/panel";
 export default function Shell({ children, path }) {
   const { data: session } = useSession();
 
@@ -103,7 +104,7 @@ export default function Shell({ children, path }) {
     <AppShell
       header={<AppBar drawer={drawer} setDrawer={setDrawer} />}
       navbar={<Drawer open={drawer} pages={pages} />}
-      aside={<Sidebar />}
+      aside={<ChatPanel />}
     >
       <Stack>
         <Breadcrumb path={path} />
