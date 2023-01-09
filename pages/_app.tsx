@@ -38,13 +38,11 @@ function App({ Component, pageProps: { session, ...pageProps } }: AppProps) {
                 <link rel="icon" href="public/favicon.ico" />
               </Head>
 
-              <main>
+              <main className="h-screen">
                 <Shell path={path}>
                   <Component {...pageProps} />
                 </Shell>
               </main>
-
-              <footer></footer>
             </div>
           </NotificationsProvider>
           <ReactQueryDevtools initialIsOpen={false} />

@@ -5,7 +5,7 @@ import { GetAncestriesResponse } from "lib/ancestry/ancestries.types";
 import { getSourcesFor } from "lib/source/source.service";
 import { useState } from "react";
 
-const rowsPerPage = 16;
+const rowsPerPage = 30;
 
 export async function getServerSideProps(ctx) {
   const ancestries: GetAncestriesResponse = await getAllAncestries();
